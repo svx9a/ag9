@@ -45,7 +45,11 @@ const asyncHandler = (fn) => (req, res, next) => {
 
 const isProd = process.env.NODE_ENV === 'production';
 const port = process.env.PORT || 3001;
-const dbType = process.env.MONGODB_URI ? 'mongodb' : (isProd ? 'mssql' : 'sqlite');
+
+// Detect Atlas SQL and treat as sqlite fallback for now since it's read-only/BI
+const isAtlasSql = process.env.MONGODB_URI && process.env.MONGODB_URI.includes('atlas-sql');
+const hasAzureSql = process.env.SQL_SERVER && process.env.SQL_USER && process.env.SQL_PASSWORD;
+const dbType = (process.env.MONGODB_URI && !isAtlasSql) ? 'mongodb' : (hasAzureSql ? 'mssql' : 'sqlite');
 
 // MongoDB Schemas
 const userSchema = new mongoose.Schema({
@@ -158,7 +162,8 @@ async function initDb(retries = 5) {
     }
   } else {
     try {
-      db = new Database('database.db');
+      const sqlitePath = process.env.DATABASE_URL || 'database.db';
+      db = new Database(sqlitePath);
       db.exec(`
         CREATE TABLE IF NOT EXISTS users (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -302,44 +307,40 @@ app.use((req, res, next) => {
 });
 
 // Session Store configuration based on database type
- let sessionStore;
-  if (dbType === 'mongodb') {
-    const mongoOptions = {
-      mongoUrl: process.env.MONGODB_URI,
-      ttl: 24 * 60 * 60,
-      autoRemove: 'native'
-    };
-    // Handle different connect-mongo export styles
-     try {
-       // If it's Atlas SQL, don't even try MongoStore as it will fail later with CommandNotFound
-       if (process.env.MONGODB_URI && process.env.MONGODB_URI.includes('atlas-sql')) {
-         console.log('Atlas SQL detected, skipping MongoStore and using SQLite');
-         const SQLiteStore = require('connect-sqlite3')(session);
-         sessionStore = new SQLiteStore({ db: 'sessions.db', dir: './' });
-       } else if (typeof MongoStore.create === 'function') {
-         console.log('Using MongoStore.create');
-         sessionStore = MongoStore.create(mongoOptions);
-       } else if (MongoStore.default && typeof MongoStore.default.create === 'function') {
-         console.log('Using MongoStore.default.create');
-         sessionStore = MongoStore.default.create(mongoOptions);
-       } else {
-         throw new Error('MongoStore.create not found');
-       }
-     } catch (err) {
-       console.log('Error initializing MongoStore, falling back to SQLite:', err.message);
-       const SQLiteStore = require('connect-sqlite3')(session);
-       sessionStore = new SQLiteStore({ db: 'sessions.db', dir: './' });
-     }
-  } else if (dbType === 'mssql') {
-   const MSSQLStore = require('connect-mssql-v2')(session);
-   sessionStore = new MSSQLStore(sqlConfig);
- } else {
-   const SQLiteStore = require('connect-sqlite3')(session);
-   sessionStore = new SQLiteStore({
-     db: 'sessions.db',
-     dir: './'
-   });
- }
+let sessionStore;
+if (dbType === 'mongodb') {
+  const mongoOptions = {
+    mongoUrl: process.env.MONGODB_URI,
+    ttl: 24 * 60 * 60,
+    autoRemove: 'native'
+  };
+  // Handle different connect-mongo export styles
+  try {
+    if (typeof MongoStore.create === 'function') {
+      console.log('Using MongoStore.create');
+      sessionStore = MongoStore.create(mongoOptions);
+    } else if (MongoStore.default && typeof MongoStore.default.create === 'function') {
+      console.log('Using MongoStore.default.create');
+      sessionStore = MongoStore.default.create(mongoOptions);
+    } else {
+      throw new Error('MongoStore.create not found');
+    }
+  } catch (err) {
+    console.log('Error initializing MongoStore, falling back to SQLite:', err.message);
+    const SQLiteStore = require('connect-sqlite3')(session);
+    sessionStore = new SQLiteStore({ db: 'sessions.db', dir: './' });
+  }
+} else if (dbType === 'mssql' && !isAtlasSql) {
+  const MSSQLStore = require('connect-mssql-v2')(session);
+  sessionStore = new MSSQLStore(sqlConfig);
+} else {
+  console.log('Using SQLite for session store');
+  const SQLiteStore = require('connect-sqlite3')(session);
+  sessionStore = new SQLiteStore({
+    db: 'sessions.db',
+    dir: './'
+  });
+}
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'agriflight-secret-key',

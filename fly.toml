@@ -11,7 +11,7 @@ primary_region = 'sin'
 
 [env]
   AGENT_ID = 'ag_019a20d4b1737572b6fe4eb8e100f91d'
-  CF_AIG_GATEWAY_URL = 'https://agx1.theworld888a.workers.dev'
+  CF_AIG_GATEWAY_URL = 'https://gateway.ai.cloudflare.com/v1/2a14c12991da690bcfb33f07fead3834/agx1'
   CF_AIG_TOKEN = '2a14c12991da690bcfb33f07fead3834'
 
   MONGODB_URI = 'mongodb://atlas-sql-68fa4b2835318b5177d9f22e-jahs9r.a.query.mongodb.net/silvercloud?ssl=true&authSource=admin'
@@ -19,7 +19,11 @@ primary_region = 'sin'
   NODE_ENV = 'production'
 
   PORT = '3001'
+  DATABASE_URL = '/data/agriflight.db'
 
+[mounts]
+  source = 'agriflight_data'
+  destination = '/data'
 
 [http_service]
   internal_port = 3001
