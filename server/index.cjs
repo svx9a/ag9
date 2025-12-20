@@ -1,6 +1,8 @@
 const express = require('express');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const SQLiteStore = require('connect-sqlite3')(session);
+const MSSQLStore = require('connect-mssql-v2')(session);
 const Database = require('better-sqlite3');
 const mssql = require('mssql');
 const mongoose = require('mongoose');
@@ -297,20 +299,33 @@ app.use((req, res, next) => {
   next();
 });
 
+// Session Store configuration based on database type
+let sessionStore;
+if (dbType === 'mongodb') {
+  sessionStore = MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+    ttl: 24 * 60 * 60,
+    autoRemove: 'native'
+  });
+} else if (dbType === 'mssql') {
+  sessionStore = new MSSQLStore(sqlConfig);
+} else {
+  sessionStore = new SQLiteStore({
+    db: 'sessions.db',
+    dir: './'
+  });
+}
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'agriflight-secret-key',
   resave: false,
   saveUninitialized: false,
-  store: dbType === 'mongodb' ? MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI,
-    ttl: 24 * 60 * 60, // 1 day
-    autoRemove: 'native'
-  }) : undefined,
+  store: sessionStore,
   cookie: {
-    secure: isProd, // set to true in production with HTTPS
+    secure: isProd,
     httpOnly: true,
-    sameSite: isProd ? 'none' : 'lax', // For cross-site cookies in prod
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    sameSite: isProd ? 'none' : 'lax',
+    maxAge: 24 * 60 * 60 * 1000
   }
 }));
 
@@ -583,6 +598,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-server.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+server.listen(port, '0.0.0.0', () => {
+  console.log(`Server running on port ${port}`);
 });
