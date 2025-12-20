@@ -90,7 +90,7 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      await api.post('/api/logout', {});
+      await api.post('/logout', {});
     } catch (err) {
       console.error('Logout failed', err);
     } finally {
