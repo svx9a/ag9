@@ -1,7 +1,6 @@
 const express = require('express');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-// Session stores will be initialized conditionally
 const Database = require('better-sqlite3');
 const mssql = require('mssql');
 const mongoose = require('mongoose');
@@ -300,13 +299,26 @@ app.use((req, res, next) => {
 
 // Session Store configuration based on database type
  let sessionStore;
- if (dbType === 'mongodb') {
-   sessionStore = MongoStore.create({
-     mongoUrl: process.env.MONGODB_URI,
-     ttl: 24 * 60 * 60,
-     autoRemove: 'native'
-   });
- } else if (dbType === 'mssql') {
+  if (dbType === 'mongodb') {
+    const mongoOptions = {
+      mongoUrl: process.env.MONGODB_URI,
+      ttl: 24 * 60 * 60,
+      autoRemove: 'native'
+    };
+    // Handle different connect-mongo export styles
+     if (typeof MongoStore.create === 'function') {
+       console.log('Using MongoStore.create');
+       sessionStore = MongoStore.create(mongoOptions);
+     } else if (MongoStore.default && typeof MongoStore.default.create === 'function') {
+       console.log('Using MongoStore.default.create');
+       sessionStore = MongoStore.default.create(mongoOptions);
+     } else {
+       console.log('Falling back to SQLiteStore');
+       // Fallback to SQLite if MongoStore fails to initialize
+       const SQLiteStore = require('connect-sqlite3')(session);
+       sessionStore = new SQLiteStore({ db: 'sessions.db', dir: './' });
+     }
+  } else if (dbType === 'mssql') {
    const MSSQLStore = require('connect-mssql-v2')(session);
    sessionStore = new MSSQLStore(sqlConfig);
  } else {
