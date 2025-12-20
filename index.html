@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="description" content="AgriFlight Global - The ultimate smart farming OS. Unified drone fleet management for DJI, XAG, and TTA. Precision agriculture, real-time mapping, and field analysis." />
+    <meta name="keywords" content="agritech, drone farming, precision agriculture, DJI Agras, XAG, smart farming, Thailand agritech" />
+    <meta property="og:title" content="AgriFlight | Smart Farming OS" />
+    <meta property="og:description" content="Unified drone fleet management and precision agriculture platform." />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=1200&auto=format&fit=crop" />
+    <meta name="theme-color" content="#059669" />
+    <title>AgriFlight | Smart Farming OS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Kanit', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            },
+            colors: {
+              gray: {
+                850: '#1f2937',
+                900: '#111827',
+                950: '#030712',
+              },
+              emerald: {
+                450: '#10b981',
+                950: '#022c22', // Deep Ag Green
+              }
+            },
+            animation: {
+              'spin-slow': 'spin 3s linear infinite',
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            }
+          }
+        }
+      }
+    </script>
+    
+    <!-- Google Fonts: Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
+    <!-- Leaflet MarkerCluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    
+    <style>
+      /* Custom Map Overrides */
+      .leaflet-container {
+        background: #f8fafc; 
+        font-family: 'Kanit', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      }
+      
+      body {
+        font-family: 'Kanit', sans-serif;
+        background-color: #f8fafc; /* Smoky Grey / Slate-50 */
+      }
+      
+      /* Custom Marker Cluster Style - Agricultural Theme */
+      .custom-cluster-icon {
+        background: transparent;
+        border: none;
+      }
+      .cluster-inner {
+        width: 100%;
+        height: 100%;
+        border-radius: 9999px;
+        background-color: rgba(16, 185, 129, 0.85); /* Emerald-500 */
+        border: 3px solid #059669; /* Emerald-600 */
+        color: white;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: transform 0.2s ease-out;
+      }
+      .custom-cluster-icon:hover .cluster-inner {
+        transform: scale(1.15);
+        background-color: #059669;
+      }
+
+      /* Drone Icon Rotate Animation */
+      .drone-icon-svg {
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+      }
+      .drone-propeller {
+        transform-origin: center;
+        animation: spin 0.2s linear infinite;
+      }
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+      }
+
+      .animate-fadeInUp {
+        animation: fadeInUp 0.6s ease-out forwards;
+      }
+
+      .animate-fadeIn {
+        animation: fadeIn 0.8s ease-out forwards;
+      }
+
+      .animate-shake {
+        animation: shake 0.4s ease-in-out;
+      }
+
+      .animate-float {
+        animation: float 3s ease-in-out infinite;
+      }
+    </style>   /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f5f9; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1; 
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8; 
+      }
+      
+      /* Light Glass Popup */
+      .glass-popup .leaflet-popup-content-wrapper {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        padding: 0;
+        border: 1px solid #e2e8f0;
+        color: #1e293b;
+        border-radius: 0.75rem;
+      }
+      .glass-popup .leaflet-popup-tip {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+      }
+      .glass-popup .leaflet-popup-content {
+        margin: 0;
+        line-height: 1.5;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "leaflet": "https://esm.sh/leaflet@^1.9.4",
+    "leaflet.markercluster": "https://esm.sh/leaflet.markercluster@^1.5.3"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-slate-50 text-slate-900 overflow-hidden">
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

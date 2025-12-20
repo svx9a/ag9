@@ -1,0 +1,6 @@
+name = "agriflight-edge-ai"
+main = "server/services/external-apis/cloudflare-ai.cjs"
+compatibility_date = "2023-12-01"
+
+[vars]
+# CF_AIG_TOKEN and CF_AIG_GATEWAY_URL should be set via dashboard or secret
