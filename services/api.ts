@@ -42,5 +42,34 @@ export const api = {
         throw new Error(errData.error || 'Something went wrong');
     }
     return response.json();
+  },
+
+  async put(endpoint: string, data: any) {
+    cache.clear();
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.error || 'Something went wrong');
+    }
+    return response.json();
+  },
+
+  async delete(endpoint: string) {
+    cache.clear();
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+    });
+    if (!response.ok) {
+      const errData = await response.json();
+      throw new Error(errData.error || 'Something went wrong');
+    }
+    return response.json();
   }
 };

@@ -31,7 +31,9 @@ import {
   Ruler,
   Timer,
   Play,
-  CheckCircle2
+  CheckCircle2,
+  Zap,
+  BookOpen
 } from 'lucide-react';
 
 import { ultraOptimizer } from './services/ultra-optimizer';

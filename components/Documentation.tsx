@@ -21,12 +21,28 @@ interface DocumentationProps {
   onClose: () => void;
 }
 
+interface DocItem {
+  id: string;
+  label: string;
+  body: string;
+}
+
+interface DocSection {
+  title: string;
+  icon: React.ReactNode;
+  content: DocItem[];
+}
+
+interface Docs {
+  [key: string]: DocSection;
+}
+
 const Documentation: React.FC<DocumentationProps> = ({ isOpen, onClose }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [language, setLanguage] = useState<'EN' | 'TH'>('EN');
   const [activeSection, setActiveSection] = useState('getting-started');
 
-  const docs = useMemo(() => ({
+  const docs = useMemo((): Docs => ({
     'getting-started': {
       title: language === 'EN' ? 'Getting Started' : 'เริ่มต้นใช้งาน',
       icon: <Zap size={18} />,
@@ -105,8 +121,8 @@ const Documentation: React.FC<DocumentationProps> = ({ isOpen, onClose }) => {
   const filteredDocs = useMemo(() => {
     if (!searchQuery) return docs;
     const query = searchQuery.toLowerCase();
-    const result: any = {};
-    Object.entries(docs).forEach(([key, section]) => {
+    const result: Docs = {};
+    (Object.entries(docs) as [string, DocSection][]).forEach(([key, section]) => {
       const filteredContent = section.content.filter(item => 
         item.label.toLowerCase().includes(query) || item.body.toLowerCase().includes(query)
       );
@@ -179,7 +195,7 @@ const Documentation: React.FC<DocumentationProps> = ({ isOpen, onClose }) => {
         <div className="flex-1 flex overflow-hidden">
           {/* Nav Sidebar */}
           <div className="w-20 sm:w-48 border-r border-slate-100 flex flex-col p-3 gap-2 bg-slate-50/30 overflow-y-auto">
-            {Object.entries(docs).map(([key, section]) => (
+            {(Object.entries(docs) as [string, DocSection][]).map(([key, section]) => (
               <button
                 key={key}
                 onClick={() => setActiveSection(key)}
@@ -197,7 +213,7 @@ const Documentation: React.FC<DocumentationProps> = ({ isOpen, onClose }) => {
 
           {/* Main Body */}
           <div className="flex-1 overflow-y-auto p-8 scroll-smooth custom-scrollbar">
-            {Object.entries(filteredDocs).map(([key, section]) => (
+            {(Object.entries(filteredDocs) as [string, DocSection][]).map(([key, section]) => (
               <div 
                 key={key} 
                 className={`space-y-8 mb-12 ${activeSection !== key && !searchQuery ? 'hidden' : 'block animate-fadeIn'}`}
