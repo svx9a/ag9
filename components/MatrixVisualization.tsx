@@ -99,8 +99,8 @@ export const MatrixVisualization: React.FC = () => {
 
   useEffect(() => {
     // Record telemetry for production monitoring
-    const metrics = ultraOptimizer.benchmark(() => calculations);
-    setBenchmark(metrics);
+    const metrics = ultraOptimizer.benchmark(async () => calculations);
+    metrics.then(res => setBenchmark(res));
 
     // Mock Analytics Tracking
     console.log('[Analytics] Matrix Calculation Updated:', {
@@ -143,68 +143,47 @@ export const MatrixVisualization: React.FC = () => {
                 <Maximize2 size={20} className="text-blue-600" />
                 Input Parameters
               </h3>
-
+              
               <div className="space-y-8">
-                {/* Farm Size Slider */}
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <label htmlFor="farm-size" className="text-sm font-semibold text-slate-700">
-                      Total Farm Area (Rai)
-                    </label>
-                    <span className="px-3 py-1 bg-blue-600 text-white rounded-lg font-bold text-sm">
-                      {farmSize} Rai
-                    </span>
+                <div>
+                  <div className="flex justify-between items-center mb-4">
+                    <label className="text-sm font-bold text-slate-700 uppercase tracking-wider">Farm Size (Rai)</label>
+                    <span className="px-3 py-1 bg-slate-100 rounded-lg font-mono font-bold text-blue-600">{farmSize}</span>
                   </div>
-                  <input
-                    id="farm-size"
-                    type="range"
-                    min="10"
-                    max="500"
-                    step="10"
+                  <input 
+                    type="range" 
+                    min="1" 
+                    max="1000" 
                     value={farmSize}
                     onChange={(e) => setFarmSize(parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
-                    aria-valuemin={10}
-                    aria-valuemax={500}
-                    aria-valuenow={farmSize}
+                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
-                  <div className="flex justify-between text-xs text-slate-400 font-medium">
-                    <span>10 Rai</span>
+                  <div className="flex justify-between mt-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    <span>1 Rai</span>
                     <span>500 Rai</span>
+                    <span>1000 Rai</span>
                   </div>
                 </div>
 
-                {/* Model Selection */}
-                <div className="space-y-4">
-                  <label className="text-sm font-semibold text-slate-700 block">
-                    Select Drone Model
-                  </label>
-                  <div className="space-y-3">
+                <div>
+                  <label className="text-sm font-bold text-slate-700 uppercase tracking-wider block mb-4">Drone Model</label>
+                  <div className="grid grid-cols-1 gap-3">
                     {DRONE_MODELS.map((m) => (
                       <button
                         key={m.id}
                         onClick={() => setSelectedModel(m.id)}
-                        className={`w-full p-4 rounded-xl border-2 transition-all flex items-center gap-4 text-left ${
-                          selectedModel === m.id
-                            ? 'border-blue-600 bg-blue-50 shadow-sm'
+                        className={`p-4 rounded-2xl border-2 text-left transition-all flex items-center gap-4 ${
+                          selectedModel === m.id 
+                            ? 'border-blue-600 bg-blue-50/50 ring-4 ring-blue-600/5' 
                             : 'border-slate-100 hover:border-slate-200 bg-white'
                         }`}
-                        aria-pressed={selectedModel === m.id}
                       >
-                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl ${
-                          selectedModel === m.id ? 'bg-blue-600' : 'bg-slate-100'
-                        }`}>
-                          {m.image}
+                        <span className="text-2xl">{m.image}</span>
+                        <div className="flex-1">
+                          <div className="font-bold text-slate-900">{m.name}</div>
+                          <div className="text-xs text-slate-500 font-medium">{m.capacity}L Capacity • {m.coveragePerCharge} Rai/Charge</div>
                         </div>
-                        <div>
-                          <p className={`font-bold text-sm ${selectedModel === m.id ? 'text-blue-900' : 'text-slate-900'}`}>
-                            {m.name}
-                          </p>
-                          <p className="text-xs text-slate-500">{m.capacity}L Capacity</p>
-                        </div>
-                        {selectedModel === m.id && (
-                          <ShieldCheck size={18} className="ml-auto text-blue-600" />
-                        )}
+                        {selectedModel === m.id && <Zap size={16} className="text-blue-600 fill-blue-600" />}
                       </button>
                     ))}
                   </div>
@@ -212,242 +191,115 @@ export const MatrixVisualization: React.FC = () => {
               </div>
             </div>
 
-            {/* Performance Telemetry Card (Mock Production Feature) */}
-            <div className="bg-slate-900 text-white p-6 rounded-[2rem] shadow-xl overflow-hidden relative group">
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Zap size={80} />
-              </div>
-              <h4 className="text-xs font-bold uppercase tracking-widest text-blue-400 mb-4 flex items-center gap-2">
-                <BarChart3 size={14} />
-                Real-time Optimization
-              </h4>
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-400">Execution Speed</span>
-                  <span className="font-mono text-emerald-400">{(benchmark?.execution_time * 1000 || 0.42).toFixed(2)}ms</span>
+            {/* Performance Metrics */}
+            {benchmark && (
+              <div className="bg-slate-900 p-6 rounded-[2rem] text-white overflow-hidden relative">
+                <div className="absolute top-0 right-0 p-4 opacity-10">
+                  <TrendingUp size={80} />
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-400">Memory Delta</span>
-                  <span className="font-mono text-emerald-400">{(benchmark?.memory_delta || 124) / 1024} KB</span>
+                <h4 className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-4">Optimization Engine</h4>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></div>
+                  <span className="text-xs font-mono font-bold">Latency: {benchmark.metrics.executionTime.toFixed(4)}ms</span>
                 </div>
-                <div className="pt-3 border-t border-white/10 mt-3">
-                  <p className="text-[10px] text-slate-500 leading-relaxed italic">
-                    Powered by AgriFlight UltraOptimizer™ for zero-latency predictive calculations.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Matrix Results Visualization */}
-          <div className="lg:col-span-8">
-            <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden flex flex-col h-full">
-              {/* Visualization Header */}
-              <div className="p-8 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div>
-                  <h3 className="text-2xl font-bold text-slate-900">Projected Performance Matrix</h3>
-                  <p className="text-slate-500 text-sm mt-1">Dynamic operational analysis for {farmSize} Rai</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex flex-col items-end">
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-tighter">Initial Investment</span>
-                    <span className="text-2xl font-black text-blue-600">
-                      ฿{calculations.totalInitialInvestment.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="w-px h-10 bg-slate-100 mx-2"></div>
-                  <button 
-                    onClick={() => setIsExpanded(!isExpanded)}
-                    className="p-2 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors text-slate-600"
-                    aria-label={isExpanded ? "Show less" : "Show detailed matrix"}
-                  >
-                    {isExpanded ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-              </div>
-
-              {/* Main Matrix Grid */}
-              <div className="flex-grow p-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {/* Operation Matrix */}
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-2 text-slate-900 font-bold">
-                      <Zap size={18} className="text-amber-500" />
-                      <h4>Operational Metrics</h4>
-                    </div>
-                    
-                    <div className="space-y-4">
-                      <div className="group bg-slate-50 p-5 rounded-2xl border border-transparent hover:border-blue-200 hover:bg-white transition-all duration-300">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-semibold text-slate-600 flex items-center gap-2">
-                            <Battery size={16} /> Total Cycles
-                          </span>
-                          <span className="text-lg font-bold text-slate-900">{calculations.totalCharges} Charges</span>
-                        </div>
-                        <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                          <div 
-                            className="bg-blue-600 h-full rounded-full transition-all duration-1000 ease-out"
-                            style={{ width: `${Math.min((calculations.totalCharges / 20) * 100, 100)}%` }}
-                          ></div>
-                        </div>
-                      </div>
-
-                      <div className="group bg-slate-50 p-5 rounded-2xl border border-transparent hover:border-blue-200 hover:bg-white transition-all duration-300">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-semibold text-slate-600 flex items-center gap-2">
-                            <Clock size={16} /> Mission Time
-                          </span>
-                          <span className="text-lg font-bold text-slate-900">{calculations.totalTime} Hours</span>
-                        </div>
-                        <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                          <div 
-                            className="bg-indigo-600 h-full rounded-full transition-all duration-1000 ease-out"
-                            style={{ width: `${Math.min((parseFloat(calculations.totalTime) / 10) * 100, 100)}%` }}
-                          ></div>
-                        </div>
-                      </div>
-
-                      <div className="group bg-slate-50 p-5 rounded-2xl border border-transparent hover:border-blue-200 hover:bg-white transition-all duration-300">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-semibold text-slate-600 flex items-center gap-2">
-                            <ShieldCheck size={16} /> Batteries Needed
-                          </span>
-                          <span className="text-lg font-bold text-slate-900">{calculations.batteriesNeeded} Units</span>
-                        </div>
-                        <div className="flex gap-1">
-                          {[...Array(4)].map((_, i) => (
-                            <div 
-                              key={i} 
-                              className={`h-2 flex-grow rounded-full ${i < calculations.batteriesNeeded ? 'bg-emerald-500' : 'bg-slate-200'}`}
-                            ></div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Profit/ROI Matrix */}
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-2 text-slate-900 font-bold">
-                      <TrendingUp size={18} className="text-emerald-500" />
-                      <h4>Economic Impact</h4>
-                    </div>
-
-                    <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-8 rounded-[2rem] border border-emerald-100 relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 p-4 text-emerald-100/50 -rotate-12 transform scale-150">
-                        <TrendingUp size={120} />
-                      </div>
-                      
-                      <div className="relative z-10 space-y-6">
-                        <div>
-                          <p className="text-emerald-700 font-bold text-sm mb-1">Annual Projected Savings</p>
-                          <p className="text-4xl font-black text-emerald-900">
-                            ฿{Math.round(calculations.seasonalSavings).toLocaleString()}
-                          </p>
-                        </div>
-                        
-                        <div className="flex items-center gap-4 bg-white/60 backdrop-blur-md p-4 rounded-2xl border border-white/40">
-                          <div className="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-bold">
-                            {calculations.breakEvenMonths}
-                          </div>
-                          <div>
-                            <p className="text-xs font-bold text-emerald-800 uppercase tracking-wider">Break-Even Period</p>
-                            <p className="text-sm text-emerald-600 font-medium">Months to full ROI</p>
-                          </div>
-                        </div>
-
-                        <div className="pt-2">
-                          <button className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-200">
-                            Get Detailed Report
-                            <ChevronRight size={18} />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Extended Details (Conditional) */}
-                {isExpanded && (
-                  <div className="mt-8 pt-8 border-t border-slate-100 animate-fadeIn">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                        <h5 className="text-xs font-bold text-slate-400 uppercase mb-3">Unit Configuration</h5>
-                        <ul className="space-y-2 text-sm text-slate-600">
-                          <li className="flex justify-between"><span>Base Drone</span> <span className="font-bold text-slate-900">฿{model.unitPrice.toLocaleString()}</span></li>
-                          <li className="flex justify-between"><span>Battery Pack (x{calculations.batteriesNeeded})</span> <span className="font-bold text-slate-900">฿{calculations.totalBatteryInvestment.toLocaleString()}</span></li>
-                          <li className="flex justify-between"><span>Smart Hub</span> <span className="text-emerald-600 font-bold">FREE</span></li>
-                        </ul>
-                      </div>
-                      <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                        <h5 className="text-xs font-bold text-slate-400 uppercase mb-3">Spray Statistics</h5>
-                        <ul className="space-y-2 text-sm text-slate-600">
-                          <li className="flex justify-between"><span>Efficiency</span> <span className="font-bold text-slate-900">98.4%</span></li>
-                          <li className="flex justify-between"><span>Overlap Margin</span> <span className="font-bold text-slate-900">0.5m</span></li>
-                          <li className="flex justify-between"><span>Auto-Terrain</span> <span className="text-emerald-600 font-bold">ACTIVE</span></li>
-                        </ul>
-                      </div>
-                      <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                        <h5 className="text-xs font-bold text-slate-400 uppercase mb-3">Maintenance Index</h5>
-                        <ul className="space-y-2 text-sm text-slate-600">
-                          <li className="flex justify-between"><span>Service Interval</span> <span className="font-bold text-slate-900">200 Hrs</span></li>
-                          <li className="flex justify-between"><span>Part Availability</span> <span className="font-bold text-slate-900">High</span></li>
-                          <li className="flex justify-between"><span>Warranty</span> <span className="text-emerald-600 font-bold">2 Years</span></li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Matrix Footer */}
-              <div className="px-8 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                <div className="flex items-center gap-2 text-slate-400 text-[10px] font-medium">
-                  <Info size={12} />
-                  <span>Calculations based on average agricultural conditions in Southeast Asia.</span>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                    <span className="text-[10px] font-bold text-slate-500 uppercase">Live Data Feed</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Warning / Edge Case Handling */}
-            {farmSize > 400 && selectedModel !== '20L' && (
-              <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-3 animate-shake">
-                <AlertCircle className="text-amber-600 shrink-0" size={20} />
-                <div>
-                  <p className="text-sm font-bold text-amber-900">Recommended Configuration Alert</p>
-                  <p className="text-xs text-amber-700 leading-relaxed">
-                    For farm sizes over 400 Rai, we strongly recommend the <strong>AgriFlight Pro 20L</strong> for optimal efficiency and mission continuity.
-                  </p>
-                </div>
+                <p className="text-[10px] text-slate-400 font-medium">
+                  Calculations hyper-executed via AstroBoyCore Predictive Caching.
+                </p>
               </div>
             )}
           </div>
+
+          {/* Results Visualization */}
+          <div className="lg:col-span-8">
+            <div className="bg-white p-8 md:p-12 rounded-[2rem] border border-slate-200 shadow-sm">
+              <div className="flex flex-wrap items-center justify-between gap-6 mb-12">
+                <h3 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
+                  <TrendingUp size={24} className="text-emerald-500" />
+                  Estimated Impact
+                </h3>
+                <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-sm font-bold">
+                  <ShieldCheck size={18} />
+                  98.5% Accuracy Rate
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 group hover:bg-white hover:border-blue-200 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-500">
+                  <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <Battery size={24} />
+                  </div>
+                  <div className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-2">Battery Management</div>
+                  <div className="text-3xl font-bold text-slate-900 mb-4">{calculations.batteriesNeeded} Units</div>
+                  <p className="text-sm text-slate-600 leading-relaxed">
+                    Recommended battery count for continuous rotation based on {calculations.totalCharges} total charges required.
+                  </p>
+                </div>
+
+                <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 group hover:bg-white hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-500">
+                  <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <Clock size={24} />
+                  </div>
+                  <div className="text-slate-500 text-sm font-bold uppercase tracking-wider mb-2">Operational Time</div>
+                  <div className="text-3xl font-bold text-slate-900 mb-4">{calculations.totalTime} Hours</div>
+                  <p className="text-sm text-slate-600 leading-relaxed">
+                    Total estimated spraying time for {farmSize} Rai at {model.sprayRate} Rai/hour.
+                  </p>
+                </div>
+              </div>
+
+              <div className="relative p-8 md:p-12 rounded-[2.5rem] bg-gradient-to-br from-slate-900 to-indigo-950 text-white overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[100px]"></div>
+                
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="p-2 bg-white/10 backdrop-blur-md rounded-lg">
+                      <BarChart3 size={20} className="text-blue-400" />
+                    </div>
+                    <span className="text-sm font-bold uppercase tracking-[0.2em] text-blue-300">Investment Summary</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div>
+                      <div className="text-blue-200/60 text-xs font-bold uppercase tracking-widest mb-2">Break-even Period</div>
+                      <div className="text-5xl font-bold mb-4 tracking-tighter">
+                        {calculations.breakEvenMonths} <span className="text-xl text-blue-300">Months</span>
+                      </div>
+                      <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-gradient-to-r from-blue-400 to-emerald-400 rounded-full transition-all duration-1000" 
+                          style={{ width: `${Math.min(100, (12 / parseFloat(calculations.breakEvenMonths)) * 100)}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="flex justify-between items-end border-b border-white/10 pb-4">
+                        <span className="text-sm text-slate-400 font-medium">Total Initial Cost</span>
+                        <span className="text-xl font-bold">฿{calculations.totalInitialInvestment.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between items-end border-b border-white/10 pb-4">
+                        <span className="text-sm text-slate-400 font-medium">Seasonal Savings (3x)</span>
+                        <span className="text-xl font-bold text-emerald-400">฿{calculations.seasonalSavings.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-12 flex flex-wrap items-center gap-4">
+                    <button className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold transition-all shadow-lg shadow-blue-900/20 flex items-center gap-2 group">
+                      Get Detailed PDF Report
+                      <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                    </button>
+                    <div className="flex items-center gap-2 text-xs text-slate-400 font-medium">
+                      <AlertCircle size={14} />
+                      *Estimated based on current market labor rates.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-4px); }
-          75% { transform: translateX(4px); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.5s ease-out forwards;
-        }
-        .animate-shake {
-          animation: shake 0.4s ease-in-out;
-        }
-      `}</style>
     </section>
   );
 };
