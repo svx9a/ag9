@@ -306,15 +306,23 @@ app.use((req, res, next) => {
       autoRemove: 'native'
     };
     // Handle different connect-mongo export styles
-     if (typeof MongoStore.create === 'function') {
-       console.log('Using MongoStore.create');
-       sessionStore = MongoStore.create(mongoOptions);
-     } else if (MongoStore.default && typeof MongoStore.default.create === 'function') {
-       console.log('Using MongoStore.default.create');
-       sessionStore = MongoStore.default.create(mongoOptions);
-     } else {
-       console.log('Falling back to SQLiteStore');
-       // Fallback to SQLite if MongoStore fails to initialize
+     try {
+       // If it's Atlas SQL, don't even try MongoStore as it will fail later with CommandNotFound
+       if (process.env.MONGODB_URI && process.env.MONGODB_URI.includes('atlas-sql')) {
+         console.log('Atlas SQL detected, skipping MongoStore and using SQLite');
+         const SQLiteStore = require('connect-sqlite3')(session);
+         sessionStore = new SQLiteStore({ db: 'sessions.db', dir: './' });
+       } else if (typeof MongoStore.create === 'function') {
+         console.log('Using MongoStore.create');
+         sessionStore = MongoStore.create(mongoOptions);
+       } else if (MongoStore.default && typeof MongoStore.default.create === 'function') {
+         console.log('Using MongoStore.default.create');
+         sessionStore = MongoStore.default.create(mongoOptions);
+       } else {
+         throw new Error('MongoStore.create not found');
+       }
+     } catch (err) {
+       console.log('Error initializing MongoStore, falling back to SQLite:', err.message);
        const SQLiteStore = require('connect-sqlite3')(session);
        sessionStore = new SQLiteStore({ db: 'sessions.db', dir: './' });
      }
