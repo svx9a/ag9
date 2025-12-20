@@ -20,7 +20,11 @@ import {
   Play,
   X,
   Lock,
-  UserCircle
+  UserCircle,
+  Code,
+  Cpu,
+  Database,
+  BookOpen
 } from 'lucide-react';
 import { api } from '../services/api';
 import MatrixVisualization from './MatrixVisualization';
