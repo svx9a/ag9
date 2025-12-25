@@ -113,6 +113,7 @@ app.use(cors({
     'http://localhost:4173',
     'https://drone-enterprise.vercel.app',
     'https://agriflight-global.vercel.app',
+    'https://agriflight-global-qpq33p1wb-aekclarkfishers-projects.vercel.app',
     'https://aeriel.vercel.app',
     /\.vercel\.app$/
   ],
