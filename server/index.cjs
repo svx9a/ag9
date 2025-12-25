@@ -108,7 +108,13 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: ['http://localhost:4173', 'https://drone-enterprise.vercel.app', 'https://agriflight-global.vercel.app', /\.vercel\.app$/],
+  origin: [
+    'http://localhost:4173',
+    'https://drone-enterprise.vercel.app',
+    'https://agriflight-global.vercel.app',
+    'https://aeriel.vercel.app',
+    /\.vercel\.app$/
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
