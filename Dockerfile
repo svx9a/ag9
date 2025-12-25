@@ -1,6 +1,16 @@
+# STAGE 1: Build Frontend
+FROM node:18-bullseye-slim AS builder
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# STAGE 2: Production Server
 FROM node:18-bullseye-slim
 
-# Install Python and build essentials for better-sqlite3
+# Install minimal build essentials for better-sqlite3 (if needed at runtime)
 RUN apt-get update && apt-get install -y \
     python3 \
     make \
@@ -9,20 +19,23 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# Copy package files
+# Copy production dependencies only
 COPY package*.json ./
+RUN npm install --production
 
-# Install dependencies
-RUN npm install
+# Copy built frontend from builder stage
+COPY --from=builder /app/dist ./dist
 
-# Copy application code
-COPY . .
-
-# Build the frontend
-RUN npm run build
+# Copy server code
+COPY server ./server
+COPY .env.example .env
 
 # Expose port
 EXPOSE 3001
+
+# Environment defaults
+ENV NODE_ENV=production
+ENV PORT=3001
 
 # Start command
 CMD ["node", "server/index.cjs"]

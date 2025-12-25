@@ -1,0 +1,15 @@
+node_modules
+dist
+.git
+.github
+.vscode
+*.log
+*.db
+.env
+backup
+Dockerfile.bak
+fly.toml.bak
+OPTIMIZATION_LOG.md
+STYLE_GUIDE.md
+docker-compose.yml
+wrangler.toml

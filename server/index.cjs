@@ -9,6 +9,7 @@ const appInsights = require('applicationinsights');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const http = require('http');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
@@ -487,7 +488,13 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 const distPath = path.join(__dirname, '../dist');
-const hasDist = require('fs').existsSync(distPath);
+const hasDist = fs.existsSync(distPath);
+
+// Ensure data directory for persistent volumes
+const dataPath = process.env.DATA_PATH || path.join(__dirname, '../data');
+if (!fs.existsSync(dataPath)) {
+  fs.mkdirSync(dataPath, { recursive: true });
+}
 
 if (isProd || hasDist) {
   app.use(express.static(distPath));
