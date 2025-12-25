@@ -18,6 +18,11 @@
       :class="{ 'animate-slow-buzz': !isOpen && unreadCount > 0 }"
       aria-label="Toggle Chat"
     >
+      <!-- Unread Badge -->
+      <div v-if="!isOpen && unreadCount > 0" class="absolute top-8 right-8 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center text-[10px] font-black z-10 border-4 border-white dark:border-slate-900 animate-bounce">
+        {{ unreadCount }}
+      </div>
+      
       <div v-if="!isOpen" class="w-full h-full flex items-center justify-center">
         <img
           src="/landing-v3/assets/Greenday_Copilot.png"

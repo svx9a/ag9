@@ -106,6 +106,13 @@ const AgentToken = mongoose.models.AgentToken || mongoose.model('AgentToken', ag
 
 const app = express();
 
+// CORS configuration
+app.use(cors({
+  origin: ['http://localhost:4173', 'https://agriflight-global.vercel.app', /\.vercel\.app$/],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true
+}));
+
 // Performance & Security Middlewares
 app.use(compression()); // Enable Gzip
 app.use(express.json({ limit: '10mb' })); // Limit body size

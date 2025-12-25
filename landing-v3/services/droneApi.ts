@@ -10,10 +10,14 @@ import { io } from 'socket.io-client';
 const HIVEGRID_BASE_URL = 'https://api.hivegrid.app/v2';
 const GISTDA_BASE_URL = 'https://api.sphere.gistda.or.th/v1';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || window.location.origin;
+
 // Initialize Socket.io connection
-const socket = io(window.location.origin, {
+const socket = io(BACKEND_URL, {
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,
+  path: '/socket.io/',
+  transports: ['polling', 'websocket']
 });
 
 export const DroneApiService = {
