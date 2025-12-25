@@ -8,7 +8,7 @@ class PartnerAgriService {
 
   /**
    * Integrate with FarmOS API
-   * Maps FarmOS Assets to AgriFlight Unified Format
+   * Maps FarmOS Assets to Smart Farming Unified Format
    */
   async getFarmAssets() {
     try {

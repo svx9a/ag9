@@ -12,11 +12,11 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://agriflight-api.fly.dev/api/$1"
+      "destination": "https://kasetgeny-api.fly.dev/api/$1"
     },
     {
       "source": "/socket.io/(.*)",
-      "destination": "https://agriflight-api.fly.dev/socket.io/$1"
+      "destination": "https://kasetgeny-api.fly.dev/socket.io/$1"
     },
     {
       "source": "/(.*)",

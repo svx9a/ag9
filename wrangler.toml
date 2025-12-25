@@ -1,4 +1,4 @@
-name = "agriflight-edge-ai"
+name = "kasetgeny-edge-ai"
 main = "server/services/external-apis/cloudflare-ai.cjs"
 compatibility_date = "2023-12-01"
 

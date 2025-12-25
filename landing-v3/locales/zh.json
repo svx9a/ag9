@@ -1,0 +1,27 @@
+{
+  "nav": {
+    "products": "产品",
+    "solutions": "解决方案",
+    "explore": "探索",
+    "support": "支持"
+  },
+  "hero": {
+    "title1": "更优增长",
+    "title2": "更美生活",
+    "subtitle": "用自主无人机技术赋能农业。统一管理大疆、极飞和天途机队。",
+    "cta": "观看视频"
+  },
+  "sections": {
+    "highlights": "产品亮点",
+    "testimonials": "农户评价",
+    "contact": "全球联系"
+  },
+  "footer": {
+    "rights": "© 2025 Smart Farming Global. 版权所有。",
+    "privacy": "隐私政策",
+    "terms": "使用条款"
+  },
+  "chat": {
+    "placeholder": "与 GreenDay AI 对话..."
+  }
+}

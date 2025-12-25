@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-    <meta name="description" content="AgriFlight Global - The ultimate smart farming OS. Unified drone fleet management for DJI, XAG, and TTA. Precision agriculture, real-time mapping, and field analysis." />
-    <meta name="keywords" content="agritech, drone farming, precision agriculture, DJI Agras, XAG, smart farming, Thailand agritech" />
-    <meta property="og:title" content="AgriFlight | Smart Farming OS" />
+    <meta name="description" content="The ultimate smart farming OS. Unified drone fleet management for Drone Kraset Gen Y and TTA. Precision agriculture, real-time mapping, and field analysis." />
+    <meta name="keywords" content="agritech, drone farming, precision agriculture, Drone Kraset Gen Y, smart farming, Thailand agritech" />
+    <meta property="og:title" content="Smart Farming OS" />
     <meta property="og:description" content="Unified drone fleet management and precision agriculture platform." />
-    <meta property="og:image" content="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=1200&auto=format&fit=crop" />
+    <meta property="og:image" content="/landing-v3/assets/hero-kgy.jpg" />
     <meta name="theme-color" content="#059669" />
-    <title>AgriFlight | Smart Farming OS</title>
+    <title>Smart Farming OS</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -21,6 +21,11 @@
               sans: ['Kanit', 'ui-sans-serif', 'system-ui', 'sans-serif'],
             },
             colors: {
+              primary: {
+                DEFAULT: '#059669', // Emerald-600
+                dark: '#022c22',    // Emerald-950
+                light: '#10b981',   // Emerald-500
+              },
               gray: {
                 850: '#1f2937',
                 900: '#111827',
@@ -34,34 +39,41 @@
             animation: {
               'spin-slow': 'spin 3s linear infinite',
               'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'bounce-slow': 'bounce-slow 3s ease-in-out infinite',
+            },
+            keyframes: {
+              'bounce-slow': {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              }
             }
           }
         }
       }
     </script>
-    
+
     <!-- Google Fonts: Kanit -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    
+
     <!-- Leaflet MarkerCluster CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-    
+
     <style>
       /* Custom Map Overrides */
       .leaflet-container {
-        background: #f8fafc; 
+        background: #f8fafc;
         font-family: 'Kanit', ui-sans-serif, system-ui, -apple-system, sans-serif;
       }
-      
+
       body {
         font-family: 'Kanit', sans-serif;
         background-color: #f8fafc; /* Smoky Grey / Slate-50 */
       }
-      
+
       /* Custom Marker Cluster Style - Agricultural Theme */
       .custom-cluster-icon {
         background: transparent;
@@ -142,16 +154,16 @@
         height: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #f1f5f9; 
+        background: #f1f5f9;
       }
       ::-webkit-scrollbar-thumb {
-        background: #cbd5e1; 
+        background: #cbd5e1;
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8; 
+        background: #94a3b8;
       }
-      
+
       /* Light Glass Popup */
       .glass-popup .leaflet-popup-content-wrapper {
         background: rgba(255, 255, 255, 0.95);
@@ -172,9 +184,12 @@
       }
     </style>
     <link rel="stylesheet" href="/index.css">
-    <script type="module" src="/index.tsx"></script>
+    <!-- React Entry -->
+    <!-- <script type="module" src="/index.tsx"></script> -->
+    <!-- Vue 3 Entry (DJI Replica) -->
+    <script type="module" src="/landing-v3/main.ts"></script>
   </head>
-  <body class="bg-slate-50 text-slate-900 overflow-hidden">
+  <body class="bg-slate-50 text-slate-900">
     <div id="root"></div>
   </body>
 </html>

@@ -1,0 +1,27 @@
+{
+  "nav": {
+    "products": "Productos",
+    "solutions": "Soluciones",
+    "explore": "Explorar",
+    "support": "Soporte"
+  },
+  "hero": {
+    "title1": "Mejor Crecimiento",
+    "title2": "Mejor Vida",
+    "subtitle": "Potenciando la agricultura con tecnología de drones autónomos. Gestión unificada de flotas para DJI, XAG y TTA.",
+    "cta": "Ver Película"
+  },
+  "sections": {
+    "highlights": "Productos Destacados",
+    "testimonials": "Lo que dicen los agricultores",
+    "contact": "Contacto Global"
+  },
+  "footer": {
+    "rights": "© 2025 Smart Farming Global. Todos los derechos reservados.",
+    "privacy": "Política de Privacidad",
+    "terms": "Términos de Uso"
+  },
+  "chat": {
+    "placeholder": "Habla con GreenDay AI..."
+  }
+}

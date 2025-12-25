@@ -1,0 +1,355 @@
+{
+  "nav": {
+    "products": "Products",
+    "about": "About",
+    "solutions": "Features",
+    "explore": "Contact",
+    "support": "Dashboard",
+    "kaset": "GreenDay Smart Farming",
+    "kaset_gen_y": "GreenDay Smart Farming",
+    "drone_hub": "Drone Hub",
+    "marketplace": "Marketplace"
+  },
+  "hero": {
+    "title1": "GreenDay",
+    "title2": "Precision Agriculture",
+    "subtitle": "Precision Agriculture for the Next Generation",
+    "cta": "Explore Solutions"
+  },
+  "sections": {
+    "highlights": "Ecosystem Highlights",
+    "services": "Professional Services",
+    "services_desc": "Expert drone spraying and precision farming solutions tailored for modern agriculture.",
+    "academy": "Smart Academy",
+    "academy_desc": "Knowledge hub for farmers and pilots to master precision agriculture technology.",
+    "marketplace": "Production Marketplace",
+    "marketplace_desc": "One-stop shop for high-quality agricultural equipment and supplies.",
+    "community": "Smart Community",
+    "community_desc": "Join our growing community of smart farmers and professional drone pilots.",
+    "promotion": "Special Offers",
+    "promotion_desc": "Exclusive deals and bundles for our dedicated community members.",
+    "testimonials": "What Farmers Say",
+    "matrix": "Spec & Cost Comparison",
+    "contact": "Global Contact",
+    "logistics": "Smart Logistics",
+    "logistics_desc": "Efficient transport and deployment systems for your drone fleet.",
+    "knowledge": "Knowledge Hub",
+    "loan_guide": "Loan & Credit Guide",
+    "loan_desc": "Financial support and low-interest loans for modern agricultural technology in partnership with BAAC Bank."
+  },
+  "loans": {
+    "title": "Financial Support for Smart Farming",
+    "subtitle": "Empowering farmers with accessible credit and modern technology guides.",
+    "bank_partner": "In Partnership with BAAC Bank",
+    "ccat_title": "Credit for Agricultural Technology (CCAT)",
+    "ccat_desc": "Special low-interest credit program specifically designed for drone acquisition and smart farming systems.",
+    "guide_step1": "1. Eligibility Check",
+    "guide_step1_desc": "Verify your farmer registration status and credit score eligibility.",
+    "guide_step2": "2. Documentation",
+    "guide_step2_desc": "Prepare your land titles, ID, and GreenDay quotation.",
+    "guide_step3": "3. Bank Interview",
+    "guide_step3_desc": "Meet with BAAC officers at your local branch for project evaluation.",
+    "guide_step4": "4. Disbursement",
+    "guide_step4_desc": "Receive funds directly for your technology investment with up to 7 years repayment.",
+    "cta": "Download Loan Guide (PDF)",
+    "apply_now": "Check Eligibility"
+  },
+  "impl_title": "Implementation Guide",
+  "impl_subtitle": "A professional roadmap to transforming your farm with GreenDay technology.",
+  "impl_step1": "Phase 1: Strategic Preparation",
+  "impl_step1_desc": "Formalize your agricultural status and conduct a baseline land assessment. Identify your specific yield goals—whether it's increasing jasmine rice aroma or reducing chemical waste.",
+  "impl_step1_action": "Action: Complete farmer registration at your local MOAC office.",
+  "impl_step2": "Phase 2: Fleet Customization",
+  "impl_step2_desc": "Consult with GreenDay engineers to match drone capabilities (Drone Kraset Gen Y) to your topography. A 50-rai flat field requires different precision than a terraced orchard.",
+  "impl_step2_action": "Action: Request a customized GreenDay ecosystem quotation.",
+  "impl_step3": "Phase 3: Financial Orchestration",
+  "impl_step3_desc": "Leverage our partnership with BAAC. Present your GreenDay technical plan to access CCAT low-interest credit designed specifically for smart tech adoption.",
+  "impl_step3_action": "Action: Submit loan application with GreenDay tech-assurance badge.",
+  "impl_step4": "Phase 4: Operational Excellence",
+  "impl_step4_desc": "Undergo training at our Smart Academy. Deploy your fleet using our unified OS for real-time monitoring and autonomous mission execution.",
+  "impl_step4_action": "Action: Launch first autonomous mission and track ROI via dashboard.",
+  "scenario_title": "Real-World Scenario",
+  "scenario_desc": "In Nakhon Nayok, a 100-rai farm utilized the CCAT loan to deploy a 3-drone fleet. Result: 40% reduction in fertilizer costs and a 15% increase in premium grain grade within the first season.",
+  "takeaway_title": "Key Takeaways",
+  "takeaway_1": "Low-interest BAAC credit (CCAT)",
+  "takeaway_2": "Unified Drone Kraset Gen Y management",
+  "takeaway_3": "Traceable quality certification",
+  "stats": {
+    "countries": "Countries",
+    "hectares": "Hectares Sprayed",
+    "centers": "Service Centers",
+    "uptime": "Uptime"
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Register",
+    "email": "Email Address",
+    "password": "Password",
+    "remember": "Remember Me",
+    "forgot": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "reset": "Reset Password",
+    "welcome": "Welcome Back!",
+    "error": "Invalid credentials. Please try again.",
+    "system_error": "Sorry, the system is temporarily unavailable. Please try again or contact our staff directly.",
+    "or": "OR"
+  },
+  "dashboard": {
+      "title": "Operational Overview",
+      "hub": "Nakhon Nayok Central Hub",
+      "fleet": "Fleet Status",
+      "missions": "Recent Missions",
+      "reports": "Data Reports",
+      "ops_grid": "Operations Grid",
+      "flight_focus": "Flight Focus",
+      "admin_mode": "Admin Mode",
+      "pilot_mode": "Pilot Mode",
+      "global_status": "Global Status",
+      "sys_online": "System Online",
+      "predictive_ai": "Predictive AI Active",
+      "full_report": "Full Analytics Report",
+      "weather_alert": "Weather Alert",
+      "rain_expected": "Rain Expected",
+      "approx": "In approx. {n} mins",
+      "rain_msg": "Nakhon Nayok region expecting light showers. Consider completing current mission and returning to base.",
+      "stats": {
+        "weather": "Local Weather",
+        "assets": "Farm Assets",
+        "connected": "Connected Assets",
+        "ai_insight": "AI Insight",
+        "system_health": "System Health",
+        "optimal": "Optimal",
+        "analytics": "Analytics Overview"
+      },
+      "affiliate": {
+        "network_size": "Network Size",
+        "direct_indirect": "Direct & Indirect",
+        "total_earned": "Total Earned",
+        "lifetime": "Lifetime earnings",
+        "balance": "Current Balance",
+        "available": "Available to withdraw",
+        "pending": "Pending Verification",
+        "hold": "7-day hold period",
+        "withdraw_funds": "Withdraw Funds",
+        "available_withdraw": "Available for Withdrawal",
+        "amount": "Amount to Withdraw",
+        "min_withdraw": "Minimum withdrawal: {n} • 7-day hold period applies for verification • Funds processed within 24-48h.",
+        "withdraw_now": "Withdraw Now",
+        "marketing_hub": "Marketing Assets",
+        "referral_link": "Your Personal Referral Link",
+        "download": "Download",
+        "copied": "Link copied to clipboard!",
+        "success": "Withdrawal request submitted!",
+        "failed": "Withdrawal failed"
+      }
+    },
+  "admin": {
+    "panel": "Admin Panel",
+    "stats": {
+      "total_hubs": "Total GreenDay Hubs",
+      "pilots_online": "GreenDay Pilots Online",
+      "pending_jobs": "Pending Jobs",
+      "active_jobs": "Active Jobs",
+      "completed_today": "Completed Today",
+      "statistics": "Today Statistics"
+    },
+    "menu": {
+      "hubs": "Manage FarmHubs",
+      "pilots": "Manage Pilots",
+      "prices": "Prices & Promo",
+      "income": "Income Reports",
+      "training": "Pilot Training",
+      "settings": "System Settings"
+    },
+    "timeline": "Job Timeline",
+    "pilot": "Pilot",
+    "farmers": "Farmers"
+  },
+  "provider": {
+    "title": "Platform Operator Dashboard",
+    "nav": {
+      "overview": "Overview",
+      "tenants": "Tenants",
+      "fleet": "Fleet",
+      "api": "API",
+      "security": "Security"
+    },
+    "stats": {
+      "platform_status": "Platform Status",
+      "total_rev": "Total Managed Rev",
+      "active_hubs": "Active FarmHubs",
+      "fleet_util": "Fleet Utilization",
+      "active_sessions": "Active Sessions"
+    },
+    "tenants": {
+      "oversight": "Tenant Oversight",
+      "managing": "Managing {n} Regional FarmHubs",
+      "search": "Search tenants...",
+      "deploy": "Deploy Hub",
+      "hub_location": "FarmHub / Location",
+      "status": "Status",
+      "pilots": "Active Pilots",
+      "health": "Health",
+      "throughput": "Throughput",
+      "monthly_rev": "Monthly Rev"
+    },
+    "telemetry": {
+      "signal": "Avg Signal Strength",
+      "battery": "Battery Health Index",
+      "compute": "Compute Load (Edge)"
+    },
+    "api": {
+      "pulse": "API Pulse",
+      "uptime": "{n}% Uptime"
+    },
+    "events": {
+      "title": "Fleet Events",
+      "live": "Live"
+    }
+  },
+  "promo": {
+    "badge": "Special Promotion",
+    "title_part1": "Super Value",
+    "title_part2": "Special Offer!",
+    "description": "Don't miss out! Get the ultimate drone package with massive discounts and professional support.",
+    "feat1": "Discount 15,000 Baht",
+    "feat2": "Battery & Charger Included",
+    "feat3": "20-30 Rai Area Coverage",
+    "feat4": "Limited Availability",
+    "cta": "Take Action Now!",
+    "details": "View Full Details",
+    "limited_offer": "Limited quantity available. Conditions apply."
+  },
+  "kaset": {
+    "role_selection": {
+      "title": "Welcome to Our Ecosystem",
+      "subtitle": "Please select your role to start",
+      "farmer": "Farmer",
+      "farmer_desc": "Order drones, calc area, check prices",
+      "pilot": "Drone Pilot (FarmHub)",
+      "pilot_desc": "Accept jobs, manage income, update status"
+    },
+    "farmer": {
+    "header": "Farmer Services",
+    "banner_title": "Call Drone Easy in 3 Steps",
+    "banner_subtitle": "Professional teams available everywhere",
+    "banner_cta": "Get Started",
+    "menu": {
+      "call_drone": "Call Drone Service",
+      "calc_area": "Calculate Farm Area",
+      "price_check": "Check Service Price",
+      "booking": "Advance Booking",
+      "history": "Service History",
+      "map_near": "FarmHub Near Me",
+      "contact": "Contact Officer"
+    }
+  },
+  "pilot": {
+    "header": "FarmHub Pilot",
+      "ready": "Ready for Service",
+      "not_ready": "Not Ready",
+      "total_jobs": "Total Jobs",
+      "rating": "Rating",
+      "menu": {
+        "pending": "Pending Jobs",
+        "active": "Active Jobs",
+        "income": "Income Summary",
+        "drone_info": "My Drone Info",
+        "location": "FarmHub Location",
+        "history": "Job History",
+        "certs": "PilotGreen Certificates"
+      },
+      "menu_desc": {
+        "pending": "Check new incoming requests",
+        "active": "Manage current missions",
+        "income": "View daily/monthly revenue",
+        "drone_info": "Manage serials and profiles",
+        "location": "Edit map position",
+        "history": "Summary of past works",
+        "certs": "Upload pilot documents"
+      }
+    }
+  },
+  "drone_hub": {
+    "seo": {
+      "title": "Drone Farming | Rice Quality Improvement with Precision Agriculture",
+      "description": "Elevate rice quality and taste with drone farming and precision spraying. Discover how our Smart Farm increases yield and income for farmers."
+    },
+    "hero": {
+      "badge": "Technology for Premium Rice Taste",
+      "title": "Innovative Drone Hub Farm",
+      "subtitle": "Elevating rice quality to global standards through Precision Agriculture. Better taste, higher yield, and sustainable cost reduction.",
+      "cta_farmer": "Farmer Inquiry",
+      "cta_partner": "Technology Partnership"
+    },
+    "science": {
+      "title": "The Science Behind the Taste",
+      "desc": "High-precision drone spraying ensures plants receive micro-nutrients consistently, directly impacting starch synthesis and aroma in rice grains.",
+      "point1": "Micron-level Spray Consistency",
+      "point2": "Maximum Nutrient Absorption",
+      "point3": "Zero Soil Compaction/Plant Stress"
+    },
+    "comparison": {
+      "hero_badge": "Performance Analysis",
+      "title": "Efficiency & Cost Comparison",
+      "table_head": {
+        "model": "Model/Capacity",
+        "battery": "Battery Cost",
+        "mist": "Water Mist Rate",
+        "area": "Area Coverage",
+        "efficiency": "Total Efficiency"
+      },
+      "models": {
+        "gen_20l": "20L Model (Standard)",
+        "gen_y_6l": "6L Model (Smart Farming)",
+        "gen_y_6ls": "6Ls Model (Smart Farming)"
+      },
+      "note": "*Coverage area depends on mist rate and wind levels."
+    },
+    "calculator": {
+      "title": "ROI Calculator",
+      "label_area": "Your Farm Area (Rai)",
+      "result_saving": "Save up to",
+      "result_efficiency": "More Area Coverage"
+    },
+    "marketplace": {
+      "hero_badge": "Rice Production Marketplace",
+      "hero_title": "Premium Production Goods Hub",
+      "hero_subtitle": "Source high-quality equipment, machinery, and supplies with integrated quality control and end-to-end traceability.",
+      "filter_categories": "Product Categories",
+      "filter_certs": "Certifications",
+      "expert_sidebar_title": "Need Expert Advice?",
+      "expert_sidebar_desc": "Consult with our agronomists to find the best equipment for your hub.",
+      "expert_sidebar_cta": "Book Consultation",
+      "qc_badge": "Quality Control Hub",
+      "qc_title": "Ensuring Excellence in Every Product",
+      "trace_title": "End-to-End Traceability",
+      "trace_subtitle": "Track quality metrics across the entire production chain with our precision tools.",
+      "edu_title": "Educational Resources",
+      "edu_subtitle": "Learn how to maintain premium rice quality through best practices and advanced equipment.",
+      "view_report": "QC Report"
+    }
+  },
+  "chat": {
+    "placeholder": "Talk to GreenDay AI..."
+  },
+  "footer": {
+    "rights": "© 2025 Smart Farming Global. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "company": "Company",
+    "products": "Products",
+    "support": "Support Center",
+    "contact": "Contact Us",
+    "about": "About Us",
+    "careers": "Careers",
+    "news": "News & Media",
+    "service_centers": "Service Centers",
+    "help_center": "Help Center",
+    "safety": "Safety Standards",
+    "academy": "Smart Academy",
+    "address": "Nakhon Nayok, Thailand 26000",
+    "phone": "+66 81 234 5678"
+  }
+}

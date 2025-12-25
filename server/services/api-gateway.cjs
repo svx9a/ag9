@@ -25,10 +25,12 @@ class UnifiedAgriGateway {
     const localAgri = require('./external-apis/local-agri-api.cjs');
     const partnerAgri = require('./external-apis/partner-agri-api.cjs');
     const cloudflareAI = require('./external-apis/cloudflare-ai.cjs');
+    const greenPilot = require('./external-apis/greenpilot.cjs');
     
     this.registerService('local', localAgri);
     this.registerService('partners', partnerAgri);
     this.registerService('ai', cloudflareAI);
+    this.registerService('greenpilot', greenPilot);
   }
 
   async request(serviceName, method, ...args) {

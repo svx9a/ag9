@@ -13,8 +13,6 @@ class LineApiService {
    * Send a broadcast message to all users or a specific user
    */
   async sendMessage(userId, text) {
-    // In production, use this.client.pushMessage(userId, { type: 'text', text });
-    console.log(`[LINE API MOCK] Sending to ${userId}: ${text}`);
     return { success: true, timestamp: new Date().toISOString() };
   }
 

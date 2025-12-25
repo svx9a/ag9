@@ -1,0 +1,27 @@
+{
+  "nav": {
+    "products": "製品",
+    "solutions": "ソリューション",
+    "explore": "探検する",
+    "support": "サポート"
+  },
+  "hero": {
+    "title1": "より良い成長",
+    "title2": "より良い生活",
+    "subtitle": "自律型ドローン技術で農業を強化。DJI、XAG、TTAの統合フリート管理。",
+    "cta": "映画を見る"
+  },
+  "sections": {
+    "highlights": "製品のハイライト",
+    "testimonials": "農家の声",
+    "contact": "グローバルコンタクト"
+  },
+  "footer": {
+    "rights": "© 2025 Smart Farming Global. 全著作権所有。",
+    "privacy": "プライバシーポリシー",
+    "terms": "利用規約"
+  },
+  "chat": {
+    "placeholder": "GreenDay AIと話す..."
+  }
+}
