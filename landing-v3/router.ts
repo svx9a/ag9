@@ -30,27 +30,6 @@ const routes = [
   },
 
   // Smart Farming Routes
-  { path: '/kaset/role', name: 'KasetRole', component: RoleSelection },
-  {
-    path: '/kaset/farmer',
-    name: 'KasetFarmer',
-    redirect: { name: 'Dashboard', query: { tab: 'farmer' } }
-  },
-  {
-    path: '/kaset/pilot',
-    name: 'KasetPilot',
-    redirect: { name: 'Dashboard', query: { tab: 'pilot' } }
-  },
-  {
-    path: '/kaset/admin',
-    name: 'KasetAdmin',
-    redirect: { name: 'Dashboard', query: { tab: 'admin' } }
-  },
-  {
-    path: '/kaset/provider',
-    name: 'KasetProvider',
-    redirect: { name: 'Dashboard', query: { tab: 'provider' } }
-  },
   { path: '/drone-hub', name: 'DroneHub', component: DroneHubLanding },
 
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound }

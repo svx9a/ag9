@@ -3,12 +3,12 @@
     <div v-if="isOpen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6">
       <!-- Backdrop -->
       <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-xl" @click="close"></div>
-      
+
       <!-- Modal Content -->
       <div class="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-white/20 animate-scaleIn">
         <!-- Progress Bar -->
         <div class="h-1.5 w-full bg-slate-100 flex">
-          <div v-for="i in 4" :key="i" 
+          <div v-for="i in 4" :key="i"
                class="h-full transition-all duration-500"
                :class="[step >= i ? 'bg-emerald-500' : 'bg-transparent']"
                :style="{ width: '25%' }"></div>
@@ -27,11 +27,11 @@
               <h3 class="text-3xl font-black text-slate-900 tracking-tight">Basic Registration</h3>
               <p class="text-slate-500 font-medium">Let's start with your farmer registration details.</p>
             </div>
-            
+
             <div class="space-y-4">
               <div class="space-y-2">
                 <label class="text-xs font-black uppercase tracking-widest text-slate-400">Farmer ID Number</label>
-                <input type="text" v-model="formData.farmerId" placeholder="1-XXXX-XXXXX-XX-X" 
+                <input type="text" v-model="formData.farmerId" placeholder="1-XXXX-XXXXX-XX-X"
                        class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all font-bold" />
               </div>
               <div class="space-y-2">
@@ -54,9 +54,9 @@
               <h3 class="text-3xl font-black text-slate-900 tracking-tight">Select Your Fleet</h3>
               <p class="text-slate-500 font-medium">Which technology are you looking to finance?</p>
             </div>
-            
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div v-for="drone in drones" :key="drone.id" 
+              <div v-for="drone in drones" :key="drone.id"
                    @click="formData.drone = drone.id"
                    class="p-6 border-2 rounded-3xl cursor-pointer transition-all flex flex-col items-center text-center gap-4"
                    :class="[formData.drone === drone.id ? 'border-emerald-500 bg-emerald-50 shadow-lg shadow-emerald-100' : 'border-slate-100 hover:border-emerald-200']">
@@ -78,7 +78,7 @@
               <h3 class="text-3xl font-black text-slate-900 tracking-tight">Credit Assessment</h3>
               <p class="text-slate-500 font-medium">Estimate your repayment capability.</p>
             </div>
-            
+
             <div class="space-y-6">
               <div class="space-y-4">
                 <div class="flex justify-between items-end">
@@ -165,9 +165,9 @@ const formData = reactive({
 });
 
 const drones = [
-  { id: 'kaset-pro', name: 'Drone Kraset Gen Y (Pro)', price: '฿450,000+', icon: Plane },
-  { id: 'kaset-v1', name: 'Drone Kraset Gen Y (V1)', price: '฿320,000+', icon: Cpu },
-  { id: 'greenday-z1', name: 'GreenDay Z1', price: '฿580,000+', icon: Zap },
+  { id: 'kaset-pro', name: 'Drone DRONE HUB (Pro)', price: '฿450,000+', icon: Plane },
+  { id: 'kaset-v1', name: 'Drone DRONE HUB (V1)', price: '฿320,000+', icon: Cpu },
+  { id: 'kraset-z1', name: 'DRONE HUB Z1', price: '฿580,000+', icon: Zap },
   { id: 'custom-fleet', name: 'Custom Fleet', price: 'Negotiable', icon: ClipboardCheck }
 ];
 

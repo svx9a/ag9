@@ -12,7 +12,15 @@ export const useAuthStore = defineStore('auth', {
     login(userData, token, rememberMe) {
       this.user = userData;
       this.token = token;
-      this.role = userData.role || 'user';
+      
+      // Normalize roles to 'provider' or 'client'
+      const rawRole = userData.role?.toLowerCase() || 'client';
+      if (['admin', 'provider', 'pilot'].includes(rawRole)) {
+        this.role = 'provider';
+      } else {
+        this.role = 'client';
+      }
+      
       this.isAuthenticated = true;
       this.rememberMe = rememberMe;
     },

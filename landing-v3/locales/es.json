@@ -1,27 +1,140 @@
 {
   "nav": {
     "products": "Productos",
-    "solutions": "Soluciones",
-    "explore": "Explorar",
-    "support": "Soporte"
+    "about": "Sobre nosotros",
+    "solutions": "Características",
+    "explore": "Contacto",
+    "support": "Panel de control",
+    "kaset": "DRONE HUB Smart Farming",
+    "kaset_gen_y": "DRONE HUB Smart Farming",
+    "drone_hub": "DRONE HUB",
+    "marketplace": "Mercado"
   },
   "hero": {
-    "title1": "Mejor Crecimiento",
-    "title2": "Mejor Vida",
-    "subtitle": "Potenciando la agricultura con tecnología de drones autónomos. Gestión unificada de flotas para DJI, XAG y TTA.",
-    "cta": "Ver Película"
+    "title1": "DRONE HUB",
+    "title2": "DRONE HUB",
+    "subtitle": "Potenciando la próxima generación de agricultura",
+    "cta": "Explorar soluciones"
   },
   "sections": {
-    "highlights": "Productos Destacados",
+    "highlights": "Puntos destacados del ecosistema",
+    "services": "Servicios profesionales",
+    "services_desc": "Soluciones expertas de pulverización con drones y agricultura de precisión adaptadas a la agricultura moderna.",
+    "academy": "Academia Inteligente",
+    "academy_desc": "Centro de conocimiento para que agricultores y pilotos dominen la tecnología de agricultura de precisión.",
+    "marketplace": "Mercado de producción",
+    "marketplace_desc": "Tienda única para equipos y suministros agrícolas de alta calidad.",
+    "community": "Comunidad Inteligente",
+    "community_desc": "Únase a nuestra creciente comunidad de agricultores inteligentes y pilotos profesionales de drones.",
+    "promotion": "Ofertas especiales",
+    "promotion_desc": "Ofertas y paquetes exclusivos para los miembros dedicados de nuestra comunidad.",
     "testimonials": "Lo que dicen los agricultores",
-    "contact": "Contacto Global"
+    "matrix": "Comparación de especificaciones y costos",
+    "contact": "Contacto global",
+    "logistics": "Logística inteligente",
+    "logistics_desc": "Sistemas eficientes de transporte y despliegue para su flota de drones.",
+    "knowledge": "Centro de conocimiento",
+    "loan_guide": "Guía de préstamos y crédito",
+    "loan_desc": "Apoyo financiero y préstamos a bajo interés para tecnología agrícola moderna en asociación con el Banco BAAC."
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "remember": "Recordarme",
+    "forgot": "¿Olvidó su contraseña?",
+    "noAccount": "¿No tiene una cuenta?",
+    "hasAccount": "¿Ya tiene una cuenta?",
+    "reset": "Restablecer contraseña",
+    "welcome": "¡Bienvenido de nuevo!",
+    "error": "Credenciales inválidas. Inténtelo de nuevo.",
+    "system_error": "Lo sentimos, el sistema no está disponible temporalmente. Inténtelo de nuevo o contacte directamente con nuestro personal.",
+    "or": "O"
+  },
+  "dashboard": {
+    "title": "Resumen operativo",
+    "hub": "Centro Central de Nakhon Nayok",
+    "fleet": "Estado de la flota",
+    "missions": "Misiones recientes",
+    "reports": "Informes de datos",
+    "ops_grid": "Cuadrícula de operaciones",
+    "flight_focus": "Enfoque de vuelo",
+    "admin_mode": "Modo administrador",
+    "pilot_mode": "Modo piloto",
+    "global_status": "Estado global",
+    "sys_online": "Sistema en línea",
+    "predictive_ai": "IA predictiva activa",
+    "full_report": "Informe analítico completo",
+    "weather_alert": "Alerta meteorológica",
+    "rain_expected": "Se espera lluvia",
+    "approx": "En aprox. {n} min",
+    "rain_msg": "La región de Nakhon Nayok espera lluvias ligeras. Considere completar la misión actual y regresar a la base.",
+    "stats": {
+      "weather": "Clima local",
+      "assets": "Activos de la granja",
+      "connected": "Activos conectados",
+      "ai_insight": "Información de IA",
+      "system_health": "Salud del sistema",
+      "optimal": "Óptimo",
+      "analytics": "Resumen analítico"
+    },
+    "oversight": "Supervisión de flota",
+    "ops_status": "Operaciones globales del centro",
+    "mission_progress": "Progreso de su misión",
+    "earn": "Gane con AgriFlight",
+    "history": "Historial de misiones",
+    "ready_takeoff": "Listo para el despegue",
+    "telemetry_agg": "Agregador de telemetría",
+    "affiliate": {
+      "network_size": "Tamaño de la red",
+      "direct_indirect": "Directo e indirecto",
+      "total_earned": "Total ganado",
+      "lifetime": "Ganancias de por vida",
+      "balance": "Saldo actual",
+      "available": "Disponible para retirar",
+      "pending": "Verificación pendiente",
+      "hold": "Período de retención de 7 días",
+      "withdraw_funds": "Retirar fondos",
+      "available_withdraw": "Disponible para retiro",
+      "amount": "Monto a retirar",
+      "min_withdraw": "Retiro mínimo: {n} • Se aplica un período de retención de 7 días para verificación • Fondos procesados en 24-48h.",
+      "withdraw_now": "Retirar ahora",
+      "marketing_hub": "Activos de marketing",
+      "referral_link": "Su enlace personal de referencia",
+      "download": "Descargar",
+      "copied": "¡Enlace copiado al portapapeles!",
+      "success": "¡Solicitud de retiro enviada!",
+      "failed": "Retiro fallido"
+    }
+  },
+  "provider": {
+    "title": "Panel de Control de Operaciones",
+    "nav": {
+      "overview": "Resumen",
+      "tenants": "Inquilinos",
+      "fleet": "Flota",
+      "api": "API",
+      "security": "Seguridad"
+    },
+    "stats": {
+      "platform_status": "Estado de la Plataforma",
+      "total_rev": "Ingresos Totales",
+      "active_hubs": "Hubs Activos",
+      "fleet_util": "Uso de Flota",
+      "active_sessions": "Sesiones Activas",
+      "global_fleet": "Flota Global",
+      "api_uptime": "Tiempo de Actividad API",
+      "system_load": "Carga del Sistema",
+      "real_time": "Tiempo real"
+    },
+    "api": {
+      "pulse": "Pulso de API"
+    }
   },
   "footer": {
     "rights": "© 2025 Smart Farming Global. Todos los derechos reservados.",
-    "privacy": "Política de Privacidad",
-    "terms": "Términos de Uso"
-  },
-  "chat": {
-    "placeholder": "Habla con GreenDay AI..."
+    "privacy": "Política de privacidad",
+    "terms": "Términos de uso"
   }
 }

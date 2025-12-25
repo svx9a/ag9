@@ -137,9 +137,9 @@ onMounted(async () => {
         email: profile.userId + '@line.auth',
         name: profile.displayName,
         picture: profile.pictureUrl,
-        role: 'user' // Default for LINE
+        role: 'client' // Default for LINE
       }, 'line_token', true);
-      router.push('/kaset/role');
+      router.push('/dashboard');
     }
   }
 });
@@ -168,7 +168,7 @@ const handleAuth = async () => {
       authStore.login(user, 'token_' + Date.now(), form.remember);
 
       // Role-based Redirection
-      redirectBasedOnRole(user.role);
+      router.push('/dashboard');
     }
   } catch (err) {
     // 2. Fallback to Mock for Dev/Testing
@@ -178,42 +178,23 @@ const handleAuth = async () => {
       let mockUser = null;
 
       if (form.email === 'pilot@smartfarming.global' && form.password === 'password') {
-        mockUser = { email: form.email, name: 'Smart Pilot', role: 'pilot' };
+        mockUser = { email: form.email, name: 'Smart Pilot', role: 'provider' };
       } else if (form.email === 'farmer@smartfarming.global' && form.password === 'password') {
-        mockUser = { email: form.email, name: 'Smart Farmer', role: 'farmer' };
+        mockUser = { email: form.email, name: 'Smart Farmer', role: 'client' };
       } else if (form.email === 'admin@smartfarming.global' && form.password === 'password') {
-        mockUser = { email: form.email, name: 'System Admin', role: 'admin' };
+        mockUser = { email: form.email, name: 'System Admin', role: 'provider' };
       } else if (form.email === 'provider@kraset.ops' && form.password === 'password') {
         mockUser = { email: form.email, name: 'Platform Operator', role: 'provider' };
       }
 
       if (mockUser) {
         authStore.login(mockUser, 'token_mock_' + Date.now(), form.remember);
-        redirectBasedOnRole(mockUser.role);
+        router.push('/dashboard');
       } else {
         error.value = t('auth.error');
       }
       isLoading.value = false;
     }, 1000);
-  }
-};
-
-const redirectBasedOnRole = (role) => {
-  switch (role) {
-    case 'provider':
-      router.push('/kaset/provider');
-      break;
-    case 'admin':
-      router.push('/kaset/admin');
-      break;
-    case 'pilot':
-      router.push('/kaset/pilot');
-      break;
-    case 'farmer':
-      router.push('/kaset/farmer');
-      break;
-    default:
-      router.push('/kaset/role');
   }
 };
 </script>

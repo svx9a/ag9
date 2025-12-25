@@ -1,18 +1,18 @@
 <script setup>
 import { ArrowUpRight } from 'lucide-vue-next';
-import droneImg from '@/landing-v3/assets/drone.png';
+import droneImg from '@/landing-v3/assets/drone_spraying_agtech.webp';
 import academyImg from '@/landing-v3/assets/acedemy.jpg';
 import marketplaceImg from '@/landing-v3/assets/dronehub3man.jpg';
 import communityImg from '@/landing-v3/assets/hero-kgy.jpg';
 import promotionImg from '@/landing-v3/assets/promotion.png';
-import logisticsImg from '@/landing-v3/assets/drone.png';
+import riceImg from '@/landing-v3/assets/rice.png';
 import logoImg from '@/landing-v3/assets/logo.png';
 
 const products = [
   {
     title: 'services',
     desc: 'services_desc',
-    image: droneImg,
+    image: 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?q=80&w=2070&auto=format&fit=crop',
     link: '/kaset/drone-hub'
   },
   {
@@ -24,7 +24,7 @@ const products = [
   {
     title: 'marketplace',
     desc: 'marketplace_desc',
-    image: marketplaceImg,
+    image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2074&auto=format&fit=crop',
     link: '/drone-hub#marketplace'
   },
   {
@@ -34,15 +34,15 @@ const products = [
     link: '/kaset'
   },
   {
-    title: 'promotion',
-    desc: 'promotion_desc',
-    image: promotionImg,
-    link: '#promo'
+    title: 'production',
+    desc: 'production_desc',
+    image: '/landing-v3/assets/quality-rice-logo.png',
+    link: '/kaset'
   },
   {
     title: 'logistics',
     desc: 'logistics_desc',
-    image: logisticsImg,
+    image: 'https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?q=80&w=2070&auto=format&fit=crop',
     link: '/kaset'
   }
 ];

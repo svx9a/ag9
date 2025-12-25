@@ -1,8 +1,0 @@
-node_modules
-dist
-.git
-azure
-*.db
-*.log
-Dockerfile
-fly.toml

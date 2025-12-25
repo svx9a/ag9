@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-white font-sans selection:bg-emerald-100 selection:text-emerald-900">
-    <Navbar @toggle-menu="isMenuOpen = !isMenuOpen" />
+    <Navbar v-if="$route.path !== '/drone-hub'" @toggle-menu="isMenuOpen = !isMenuOpen" />
 
     <main>
       <router-view v-slot="{ Component }">
@@ -12,7 +12,7 @@
 
     <Footer />
 
-    <ChatWidget />
+    <ChatWidget v-if="$route.path !== '/drone-hub'" />
 
     <!-- Mobile Menu Overlay -->
     <div v-if="isMenuOpen"

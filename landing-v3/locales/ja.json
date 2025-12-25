@@ -1,27 +1,140 @@
 {
   "nav": {
     "products": "製品",
-    "solutions": "ソリューション",
-    "explore": "探検する",
-    "support": "サポート"
+    "about": "私たちについて",
+    "solutions": "特徴",
+    "explore": "お問い合わせ",
+    "support": "ダッシュボード",
+    "kaset": "DRONE HUB スマート農業",
+    "kaset_gen_y": "DRONE HUB スマート農業",
+    "drone_hub": "DRONE HUB",
+    "marketplace": "マーケットプレイス"
   },
   "hero": {
-    "title1": "より良い成長",
-    "title2": "より良い生活",
-    "subtitle": "自律型ドローン技術で農業を強化。DJI、XAG、TTAの統合フリート管理。",
-    "cta": "映画を見る"
+    "title1": "DRONE HUB",
+    "title2": "DRONE HUB",
+    "subtitle": "次世代の農業を強化する",
+    "cta": "ソリューションを探索"
   },
   "sections": {
-    "highlights": "製品のハイライト",
+    "highlights": "エコシステムのハイライト",
+    "services": "プロフェッショナルサービス",
+    "services_desc": "現代農業に合わせて調整されたエキスパートドローン散布および精密農業ソリューション。",
+    "academy": "スマートアカデミー",
+    "academy_desc": "農家やパイロットが精密農業技術を習得するための知識ハブ。",
+    "marketplace": "生産マーケットプレイス",
+    "marketplace_desc": "高品質の農業機器と資材のワンストップショップ。",
+    "community": "スマートコミュニティ",
+    "community_desc": "成長を続けるスマート農家とプロのドローンパイロットのコミュニティに参加してください。",
+    "promotion": "特別オファー",
+    "promotion_desc": "熱心なコミュニティメンバー向けの限定ディールとバンドル。",
     "testimonials": "農家の声",
-    "contact": "グローバルコンタクト"
+    "matrix": "スペックとコストの比較",
+    "contact": "グローバルコンタクト",
+    "logistics": "スマート物流",
+    "logistics_desc": "ドローンフリートのための効率的な輸送および配備システム。",
+    "knowledge": "ナレッジハブ",
+    "loan_guide": "ローンとクレジットのガイド",
+    "loan_desc": "BAAC銀行との提携による、現代の農業技術のための資金提供と低利ローン。"
+  },
+  "auth": {
+    "login": "サインイン",
+    "register": "登録",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "remember": "ログイン状態を保持",
+    "forgot": "パスワードを忘れた場合",
+    "noAccount": "アカウントをお持ちでない場合",
+    "hasAccount": "既にアカウントをお持ちの場合",
+    "reset": "パスワードをリセット",
+    "welcome": "おかえりなさい！",
+    "error": "資格情報が無効です。もう一度お試しください。",
+    "system_error": "申し訳ありません。システムは一時的に利用できません。もう一度お試しいただくか、スタッフに直接お問い合わせください。",
+    "or": "または"
+  },
+  "dashboard": {
+    "title": "運用概要",
+    "hub": "ナコンナヨック中央ハブ",
+    "fleet": "フリートステータス",
+    "missions": "最近のミッション",
+    "reports": "データレポート",
+    "ops_grid": "運用グリッド",
+    "flight_focus": "フライトフォーカス",
+    "admin_mode": "管理者モード",
+    "pilot_mode": "パイロットモード",
+    "global_status": "グローバルステータス",
+    "sys_online": "システムオンライン",
+    "predictive_ai": "予測AIアクティブ",
+    "full_report": "完全な分析レポート",
+    "weather_alert": "気象警報",
+    "rain_expected": "雨の予想",
+    "approx": "約 {n} 分後",
+    "rain_msg": "ナコンナヨック地域で小雨が予想されます。現在のミッションを完了し、基地に戻ることを検討してください。",
+    "stats": {
+      "weather": "地域の天気",
+      "assets": "農場資産",
+      "connected": "接続された資産",
+      "ai_insight": "AIインサイト",
+      "system_health": "システムヘルス",
+      "optimal": "最適",
+      "analytics": "分析概要"
+    },
+    "oversight": "フリート監視",
+    "ops_status": "グローバルハブ運用",
+    "mission_progress": "あなたのミッションの進捗",
+    "earn": "AgriFlightで稼ぐ",
+    "history": "ミッション履歴",
+    "ready_takeoff": "離陸準備完了",
+    "telemetry_agg": "テレメトリ・アグリゲーター",
+    "affiliate": {
+      "network_size": "ネットワークサイズ",
+      "direct_indirect": "直接および間接",
+      "total_earned": "総獲得額",
+      "lifetime": "生涯獲得額",
+      "balance": "現在の残高",
+      "available": "引き出し可能",
+      "pending": "確認待ち",
+      "hold": "7日間の保留期間",
+      "withdraw_funds": "資金を引き出す",
+      "available_withdraw": "引き出し可能な金額",
+      "amount": "引き出し額",
+      "min_withdraw": "最小引き出し額: {n} • 確認のために7日間の保留期間が適用されます • 資金は24〜48時間以内に処理されます。",
+      "withdraw_now": "今すぐ引き出す",
+      "marketing_hub": "マーケティングアセット",
+      "referral_link": "あなたの個人紹介リンク",
+      "download": "ダウンロード",
+      "copied": "リンクがクリップボードにコピーされました！",
+      "success": "引き出しリクエストが送信されました！",
+      "failed": "引き出しに失敗しました"
+    }
+  },
+  "provider": {
+    "title": "プラットフォーム運用ダッシュボード",
+    "nav": {
+      "overview": "概要",
+      "tenants": "テナント",
+      "fleet": "フリート",
+      "api": "API",
+      "security": "セキュリティ"
+    },
+    "stats": {
+      "platform_status": "プラットフォームステータス",
+      "total_rev": "総管理収益",
+      "active_hubs": "アクティブなハブ",
+      "fleet_util": "フリート利用率",
+      "active_sessions": "アクティブセッション",
+      "global_fleet": "グローバルフリート",
+      "api_uptime": "API稼働時間",
+      "system_load": "システム負荷",
+      "real_time": "リアルタイム"
+    },
+    "api": {
+      "pulse": "APIパルス"
+    }
   },
   "footer": {
-    "rights": "© 2025 Smart Farming Global. 全著作権所有。",
+    "rights": "© 2025 Smart Farming Global. 無断複写・転載を禁じます。",
     "privacy": "プライバシーポリシー",
     "terms": "利用規約"
-  },
-  "chat": {
-    "placeholder": "GreenDay AIと話す..."
   }
 }

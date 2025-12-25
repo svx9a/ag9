@@ -13,7 +13,7 @@
           </h2>
         </div>
         <p class="text-slate-500 font-bold max-w-xs text-sm leading-relaxed">
-            ข้อมูลเชิงลึกเปรียบเทียบประสิทธิภาพระหว่างโดรนทั่วไปและโดรนจาก <span class="text-emerald-600 font-black">GreenDay</span>
+            ข้อมูลเชิงลึกเปรียบเทียบประสิทธิภาพระหว่างโดรนทั่วไปและโดรนจาก <span class="text-emerald-600 font-black">DRONE HUB</span>
           </p>
         </div>
 

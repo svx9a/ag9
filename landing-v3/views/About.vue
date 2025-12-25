@@ -31,7 +31,7 @@
           </div>
         </div>
         <div class="grid grid-cols-2 gap-4">
-          <img src="@/landing-v3/assets/drone.png" class="rounded-2xl shadow-lg h-48 w-full object-cover" />
+          <img src="@/landing-v3/assets/drone_spraying_agtech.webp" class="rounded-2xl shadow-lg h-48 w-full object-cover" />
           <img src="@/landing-v3/assets/dronehub3man.jpg" class="rounded-2xl shadow-lg h-48 w-full object-cover" />
           <img src="@/landing-v3/assets/hero-kgy.jpg" class="rounded-2xl shadow-lg h-48 w-full object-cover" />
           <img src="@/landing-v3/assets/promotion.png" class="rounded-2xl shadow-lg h-48 w-full object-cover" />

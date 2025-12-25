@@ -33,7 +33,7 @@
 import { Star } from 'lucide-vue-next';
 import logoImg from '@/landing-v3/assets/logo.png';
 
-const logoHtml = `<img src="${logoImg}" alt="Logo" class="h-5 w-auto inline-block mx-1 align-middle" />`;
+const logoHtml = `<img src="/landing-v3/assets/logo.png" alt="Logo" class="h-5 w-auto inline-block mx-1 align-middle" />`;
 
 const testimonials = [
   {

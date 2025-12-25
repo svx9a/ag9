@@ -1,16 +1,15 @@
 <template>
   <div>
-    <Hero />
+    <ModernHero />
     <Partners />
     <Products />
     <PromoSection />
     <Testimonials />
-    <Contact />
   </div>
 </template>
 
 <script setup>
-import Hero from '../components/Hero.vue';
+import ModernHero from '../components/ModernHero.vue';
 import Partners from '../components/Partners.vue';
 import Products from '../components/Products.vue';
 import PromoSection from '../components/PromoSection.vue';

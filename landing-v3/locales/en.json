@@ -5,15 +5,15 @@
     "solutions": "Features",
     "explore": "Contact",
     "support": "Dashboard",
-    "kaset": "GreenDay Smart Farming",
-    "kaset_gen_y": "GreenDay Smart Farming",
-    "drone_hub": "Drone Hub",
+    "kaset": "DRONE HUB Smart Farming",
+    "kaset_gen_y": "DRONE HUB Smart Farming",
+    "drone_hub": "DRONE HUB",
     "marketplace": "Marketplace"
   },
   "hero": {
-    "title1": "GreenDay",
-    "title2": "Precision Agriculture",
-    "subtitle": "Precision Agriculture for the Next Generation",
+    "title1": "DRONE HUB",
+    "title2": "DRONE HUB",
+    "subtitle": "DRONE HUB for the Next Generation",
     "cta": "Explore Solutions"
   },
   "sections": {
@@ -46,7 +46,7 @@
     "guide_step1": "1. Eligibility Check",
     "guide_step1_desc": "Verify your farmer registration status and credit score eligibility.",
     "guide_step2": "2. Documentation",
-    "guide_step2_desc": "Prepare your land titles, ID, and GreenDay quotation.",
+    "guide_step2_desc": "Prepare your land titles, ID, and DRONE HUB quotation.",
     "guide_step3": "3. Bank Interview",
     "guide_step3_desc": "Meet with BAAC officers at your local branch for project evaluation.",
     "guide_step4": "4. Disbursement",
@@ -55,16 +55,16 @@
     "apply_now": "Check Eligibility"
   },
   "impl_title": "Implementation Guide",
-  "impl_subtitle": "A professional roadmap to transforming your farm with GreenDay technology.",
+  "impl_subtitle": "A professional roadmap to transforming your farm with DRONE HUB technology.",
   "impl_step1": "Phase 1: Strategic Preparation",
   "impl_step1_desc": "Formalize your agricultural status and conduct a baseline land assessment. Identify your specific yield goals—whether it's increasing jasmine rice aroma or reducing chemical waste.",
   "impl_step1_action": "Action: Complete farmer registration at your local MOAC office.",
   "impl_step2": "Phase 2: Fleet Customization",
-  "impl_step2_desc": "Consult with GreenDay engineers to match drone capabilities (Drone Kraset Gen Y) to your topography. A 50-rai flat field requires different precision than a terraced orchard.",
-  "impl_step2_action": "Action: Request a customized GreenDay ecosystem quotation.",
+  "impl_step2_desc": "Consult with DRONE HUB engineers to match drone capabilities (Drone Kraset Gen Y) to your topography. A 50-rai flat field requires different precision than a terraced orchard.",
+  "impl_step2_action": "Action: Request a customized DRONE HUB ecosystem quotation.",
   "impl_step3": "Phase 3: Financial Orchestration",
-  "impl_step3_desc": "Leverage our partnership with BAAC. Present your GreenDay technical plan to access CCAT low-interest credit designed specifically for smart tech adoption.",
-  "impl_step3_action": "Action: Submit loan application with GreenDay tech-assurance badge.",
+  "impl_step3_desc": "Leverage our partnership with BAAC. Present your DRONE HUB technical plan to access CCAT low-interest credit designed specifically for smart tech adoption.",
+  "impl_step3_action": "Action: Submit loan application with DRONE HUB tech-assurance badge.",
   "impl_step4": "Phase 4: Operational Excellence",
   "impl_step4_desc": "Undergo training at our Smart Academy. Deploy your fleet using our unified OS for real-time monitoring and autonomous mission execution.",
   "impl_step4_action": "Action: Launch first autonomous mission and track ROI via dashboard.",
@@ -122,6 +122,13 @@
         "optimal": "Optimal",
         "analytics": "Analytics Overview"
       },
+      "oversight": "Fleet Oversight",
+      "ops_status": "Global Hub Operations",
+      "mission_progress": "Your Mission Progress",
+      "earn": "Earn with AgriFlight",
+      "history": "Mission History",
+      "ready_takeoff": "Ready for Takeoff",
+      "telemetry_agg": "Telemetry Aggregator",
       "affiliate": {
         "network_size": "Network Size",
         "direct_indirect": "Direct & Indirect",
@@ -147,8 +154,8 @@
   "admin": {
     "panel": "Admin Panel",
     "stats": {
-      "total_hubs": "Total GreenDay Hubs",
-      "pilots_online": "GreenDay Pilots Online",
+      "total_hubs": "Total DRONE HUB Centers",
+      "pilots_online": "DRONE HUB Pilots Online",
       "pending_jobs": "Pending Jobs",
       "active_jobs": "Active Jobs",
       "completed_today": "Completed Today",
@@ -180,7 +187,11 @@
       "total_rev": "Total Managed Rev",
       "active_hubs": "Active FarmHubs",
       "fleet_util": "Fleet Utilization",
-      "active_sessions": "Active Sessions"
+      "active_sessions": "Active Sessions",
+      "global_fleet": "Global Fleet",
+      "api_uptime": "API Uptime",
+      "system_load": "System Load",
+      "real_time": "Real-time"
     },
     "tenants": {
       "oversight": "Tenant Oversight",
@@ -210,8 +221,7 @@
   },
   "promo": {
     "badge": "Special Promotion",
-    "title_part1": "Super Value",
-    "title_part2": "Special Offer!",
+    "title": "Super Value Special Offer!",
     "description": "Don't miss out! Get the ultimate drone package with massive discounts and professional support.",
     "feat1": "Discount 15,000 Baht",
     "feat2": "Battery & Charger Included",
@@ -332,7 +342,7 @@
     }
   },
   "chat": {
-    "placeholder": "Talk to GreenDay AI..."
+    "placeholder": "Talk to DRONE HUB AI..."
   },
   "footer": {
     "rights": "© 2025 Smart Farming Global. All rights reserved.",

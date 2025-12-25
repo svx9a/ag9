@@ -1,0 +1,10 @@
+name = "agx1"
+main = "index.js"
+compatibility_date = "2023-12-01"
+
+[vars]
+MISTRAL_API_KEY = ""
+AGENT_ID = "ag_019b528b90c171afac8a40397b4de1a8"
+MISTRAL_MODEL = "mistral-medium-latest"
+OPENAI_API_KEY = ""
+CF_AIG_TOKEN = ""

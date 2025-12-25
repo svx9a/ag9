@@ -24,7 +24,7 @@
     <section class="py-24 bg-white">
       <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
         <div class="order-2 md:order-1">
-          <img src="@/landing-v3/assets/drone.png" class="rounded-3xl shadow-2xl w-full h-auto object-cover" />
+          <img src="@/landing-v3/assets/drone_spraying_agtech.webp" class="rounded-3xl shadow-2xl w-full h-auto object-cover" />
         </div>
         <div class="order-1 md:order-2">
           <h2 class="text-4xl font-bold mb-8 leading-tight">Intelligent Mission Planning</h2>

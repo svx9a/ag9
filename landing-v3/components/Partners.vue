@@ -64,7 +64,7 @@
 </template>
 
 <script setup>
-import { ShieldCheck, Plane } from 'lucide-vue-next';
+import { ShieldCheck } from 'lucide-vue-next';
 
 // Local asset imports
 import ttaLogo from '../assets/TTALogo_kl.png';
@@ -74,9 +74,10 @@ import baacLogo from '../assets/thai_bank.png';
 import xagLogo from '../assets/XAG_Logo_2022.png';
 import djiLogo from '../assets/dji-logo-png_seeklogo-492192.png';
 import moacLogo from '../assets/moac_thailand.png';
+import logoImg from '../assets/logo.png';
 
 const partners = [
-  { name: 'Drone Kraset Gen Y', icon: Plane },
+  { name: 'DRONE HUB AI', logo: logoImg },
   { name: 'TTA', logo: ttaLogo },
   { name: 'XAG', logo: xagLogo },
   { name: 'DJI', logo: djiLogo },

@@ -46,9 +46,8 @@
           </div>
 
           <h2 class="text-5xl md:text-8xl font-black text-slate-900 leading-[0.9] tracking-tighter">
-            {{ $t('promo.title_part1') }} <br/>
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-emerald-500 to-emerald-700">
-              {{ $t('promo.title_part2') }}
+              {{ $t('promo.title') }}
             </span>
           </h2>
 

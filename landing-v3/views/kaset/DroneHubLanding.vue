@@ -20,35 +20,11 @@
     </component>
 
     <!-- Hero Section -->
-    <section class="relative min-h-[90vh] flex items-center pt-20 overflow-hidden bg-slate-900">
+    <section class="relative min-h-[90vh] flex items-center overflow-hidden bg-white">
       <div class="absolute inset-0 z-0">
-        <img src="@/landing-v3/assets/hero-kgy.jpg"
-             class="w-full h-full object-cover opacity-60 scale-110 animate-pulse-slow"
-             alt="Smart Farming Hero" />
-        <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent"></div>
-      </div>
-
-      <div class="max-w-7xl mx-auto px-6 relative z-10">
-        <div class="max-w-3xl">
-          <span class="inline-block px-4 py-1.5 bg-emerald-500 text-white text-xs font-black uppercase tracking-widest rounded-full mb-6 animate-bounce">
-            {{ $t('drone_hub.hero.badge') }}
-          </span>
-          <h1 class="text-5xl md:text-7xl font-black text-white mb-6 leading-tight">
-            {{ $t('drone_hub.hero.title') }}
-          </h1>
-          <p class="text-xl text-slate-300 mb-10 leading-relaxed font-medium">
-            {{ $t('drone_hub.hero.subtitle') }}
-          </p>
-          <div class="flex flex-col sm:flex-row gap-4">
-            <button class="px-8 py-4 bg-emerald-600 text-white font-black rounded-2xl hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-900/40 flex items-center justify-center gap-3">
-              {{ $t('drone_hub.hero.cta_farmer') }}
-              <ArrowRight class="w-5 h-5" />
-            </button>
-            <button class="px-8 py-4 bg-white/10 backdrop-blur-md text-white border border-white/20 font-black rounded-2xl hover:bg-white/20 transition-all">
-              {{ $t('drone_hub.hero.cta_partner') }}
-            </button>
-          </div>
-        </div>
+        <img src="/landing-v3/assets/hero-kgy.jpg"
+             class="w-full h-full object-contain opacity-100"
+             alt="Quality Rice Background" />
       </div>
     </section>
 
@@ -144,7 +120,7 @@
             </div>
             <h2 class="text-4xl md:text-5xl font-black text-white mb-8 leading-tight">Nakhon Nayok Rice Hub Increased Yield by 15%</h2>
             <p class="text-xl text-slate-300 mb-10 leading-relaxed font-medium">
-              "By integrating <img src="@/landing-v3/assets/logo.png" alt="Logo" class="h-6 w-auto inline-block align-middle" /> drones with GISTDA satellite monitoring, we were able to detect pest outbreaks 4 days earlier and treat them with 100% precision."
+              "By integrating <img src="/landing-v3/assets/logo.png" alt="Logo" class="h-6 w-auto inline-block align-middle" /> drones with GISTDA satellite monitoring, we were able to detect pest outbreaks 4 days earlier and treat them with 100% precision."
             </p>
             <div class="flex items-center gap-6">
               <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-slate-900 font-black text-2xl border-4 border-emerald-500">
@@ -298,7 +274,7 @@
           </div>
           <div class="relative">
             <div class="aspect-square bg-slate-100 rounded-[3rem] overflow-hidden shadow-2xl">
-              <img src="@/landing-v3/assets/drone.png" class="w-full h-full object-cover" />
+              <img src="@/landing-v3/assets/drone_spraying_agtech.webp" class="w-full h-full object-cover" />
             </div>
             <div class="absolute -bottom-8 -left-8 p-8 bg-emerald-600 rounded-3xl text-white shadow-2xl max-w-xs">
               <div class="flex items-center gap-4 mb-4">
@@ -393,22 +369,22 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import {
   ArrowRight, Droplets, Plane, Star, Navigation,
   ShoppingBag, ShieldCheck, Search, Factory,
   ClipboardCheck, BarChart3, Microscope, FileCheck,
-  Zap, MapIcon, ChevronRight
+  Zap, MapIcon, ChevronRight,
+  User, Check, Heart, Mail, Phone, MapPin, ExternalLink
 } from 'lucide-vue-next';
-import Navbar from '../../components/Navbar.vue';
-import Footer from '../../components/Footer.vue';
-import { DroneApiService } from '../../services/droneApi';
-import PromoSection from '../../components/PromoSection.vue';
-import MatrixCalculator from '../../components/MatrixCalculator.vue';
-import Products from '../../components/Products.vue';
+import PromoSection from '@/landing-v3/components/PromoSection.vue';
+import { DroneApiService } from '@/landing-v3/services/droneApi';
 
 // Import Assets
-import droneImg from '@/landing-v3/assets/drone.png';
+import riceImg from '@/landing-v3/assets/rice.png';
+import droneImg from '@/landing-v3/assets/drone_spraying_agtech.webp';
 import academyImg from '@/landing-v3/assets/acedemy.jpg';
 import marketplaceImg from '@/landing-v3/assets/dronehub3man.jpg';
 import communityImg from '@/landing-v3/assets/hero-kgy.jpg';
@@ -416,10 +392,10 @@ import promotionImg from '@/landing-v3/assets/promotion.png';
 
 const testimonials = [
   {
-    name: 'Khun Prapat',
-    role: 'Nakhon Nayok Rice Hub',
-    image: droneImg,
-    text: "Since switching to our Drone Hub technology, our Jasmine rice aroma has intensified, and the grain uniformity is the best we've seen in decades."
+    name: 'Khun Somsak',
+    role: 'Nakhon Nayok Hub Leader',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1974&auto=format&fit=crop',
+    text: "Since using the platform, our rice Hub has seen a 15% increase in yield. The precision spraying is a game-changer for our organic certification."
   },
   {
     name: 'Khun Somchai',
@@ -443,7 +419,8 @@ const telemetryData = ref({
 });
 
 const dronePosition = ref({ lat: 14.2069, lng: 101.2133 });
-let telemetryInterval;
+let map;
+let marker;
 
 const startMission = async () => {
   telemetryData.value.status = 'SYNCING...';
@@ -455,10 +432,41 @@ const startMission = async () => {
     altitude: result.altitude,
     flow_rate: result.flow_rate
   };
-  dronePosition.value = result.location;
+
+  if (result.location && Array.isArray(result.location)) {
+    dronePosition.value = { lat: result.location[0], lng: result.location[1] };
+  } else if (result.location) {
+    dronePosition.value = { lat: result.location.lat, lng: result.location.lng };
+  }
+
+  if (marker && map) {
+    marker.setLatLng([dronePosition.value.lat, dronePosition.value.lng]);
+    map.panTo([dronePosition.value.lat, dronePosition.value.lng]);
+  }
 };
 
-onMounted(() => {
+onMounted(async () => {
+  await nextTick();
+
+  // Initialize Map
+  if (document.getElementById('live-drone-map')) {
+    map = L.map('live-drone-map').setView([dronePosition.value.lat, dronePosition.value.lng], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    const droneIcon = L.divIcon({
+      className: 'custom-drone-icon',
+      html: `<div class="w-8 h-8 bg-emerald-600 rounded-full border-4 border-white shadow-lg flex items-center justify-center text-white">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22 12 2l10 20-10-5z"/></svg>
+            </div>`,
+      iconSize: [32, 32],
+      iconAnchor: [16, 16]
+    });
+
+    marker = L.marker([dronePosition.value.lat, dronePosition.value.lng], { icon: droneIcon }).addTo(map);
+  }
+
   // Connect Socket.io for Real-time Drone Updates
   DroneApiService.socket.on('drone-status-update', (drones) => {
     if (drones && drones.length > 0) {
@@ -471,16 +479,25 @@ onMounted(() => {
       };
 
       // Update Marker Position
-      dronePosition.value = {
+      const newPos = {
         lat: mainDrone.location.lat,
         lng: mainDrone.location.lng
       };
+      dronePosition.value = newPos;
+
+      if (marker && map) {
+        marker.setLatLng([newPos.lat, newPos.lng]);
+        // map.panTo([newPos.lat, newPos.lng]); // Optional: keep map centered
+      }
     }
   });
 });
 
 onUnmounted(() => {
   DroneApiService.socket.off('drone-status-update');
+  if (map) {
+    map.remove();
+  }
 });
 
 const categories = ['Equipment', 'Machinery', 'Packaging', 'Supplies'];
@@ -490,29 +507,29 @@ const products = [
   {
     id: 1,
     name: 'Industrial Rice Polisher X5',
-    description: 'Advanced polishing machinery for premium long-grain rice with minimal breakage.',
+    description: 'Advanced polishing machinery for premium long-grain rice with minimal breakage and maximum output efficiency.',
     price: '฿450,000',
     rating: 4.9,
-    image: droneImg,
-    badges: ['High Efficiency', 'ISO Certified']
+    image: 'https://images.unsplash.com/photo-1586771107445-d3ca888129ff?q=80&w=2072&auto=format&fit=crop',
+    badges: ['High Efficiency', 'ISO Certified', 'Production Ready']
   },
   {
     id: 2,
-    name: 'Smart Moisture Analyzer',
-    description: 'Precision moisture testing tool for real-time grain quality monitoring.',
-    price: '฿12,500',
+    name: 'Smart Packaging Suite',
+    description: 'Complete automated packaging line with integrated QR-traceability for direct-to-consumer online sales.',
+    price: '฿280,000',
     rating: 4.8,
-    image: communityImg,
-    badges: ['Precision', 'Portable']
+    image: riceImg,
+    badges: ['Marketplace Ready', 'Traceability', 'Export Grade']
   },
   {
     id: 3,
-    name: 'Eco-Friendly Bio-Fertilizer',
-    description: 'Organic nutrient booster specifically formulated for high-aroma rice varieties.',
-    price: '฿1,200',
-    rating: 4.7,
-    image: promotionImg,
-    badges: ['Organic', 'Eco-Safe']
+    name: 'Precision Drone Fleet',
+    description: 'Enterprise-grade spraying and monitoring drones for large-scale agricultural production management.',
+    price: '฿1,200,000',
+    rating: 5.0,
+    image: 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?q=80&w=2070&auto=format&fit=crop',
+    badges: ['Atomic Powered', '24/7 Support', 'Full Fleet']
   }
 ];
 

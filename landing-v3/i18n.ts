@@ -5,23 +5,27 @@ import zh from './locales/zh.json';
 import ja from './locales/ja.json';
 import es from './locales/es.json';
 
+const messages = {
+  en,
+  th,
+  zh,
+  ja,
+  es,
+  'ar': {
+    "dashboard": {
+      "oversight": "الإشراف على الأسطول",
+      "ops_status": "عمليات المركز العالمي"
+    }
+  }
+};
+
 const i18n = createI18n({
   legacy: false,
-  locale: 'en',
+  locale: localStorage.getItem('user_locale') || 'en',
   fallbackLocale: 'en',
-  messages: {
-    en,
-    th,
-    zh,
-    ja,
-    es
-  }
+  messages,
 });
 
-// Auto-detect locale
-const userLocale = navigator.language.split('-')[0];
-if (['en', 'th', 'zh', 'ja', 'es'].includes(userLocale)) {
-  i18n.global.locale.value = userLocale;
-}
+export const isRTL = (locale: string) => ['ar', 'he', 'fa'].includes(locale);
 
 export default i18n;

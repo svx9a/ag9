@@ -1,19 +1,38 @@
 <template>
-  <div class="pt-24 min-h-screen bg-white text-slate-900">
+  <div class="pt-24 min-h-screen bg-slate-50 text-slate-900" :dir="isRTL($i18n.locale) ? 'rtl' : 'ltr'">
     <div class="max-w-7xl mx-auto px-6 py-12">
       <!-- Welcome Header -->
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
         <div>
-          <h1 class="text-4xl font-bold mb-2">{{ $t('dashboard.title') }}</h1>
-          <p class="text-slate-500 font-medium italic">
+          <h1 class="text-4xl font-black text-slate-900 mb-2 uppercase tracking-tighter italic">{{ $t('dashboard.title') }}</h1>
+          <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px]">
             {{ $t('dashboard.hub') }} • {{ authStore.user?.name || $t('dashboard.pilot_mode') }}
           </p>
         </div>
         <div class="flex items-center gap-4">
-          <div class="flex bg-slate-100 p-1 rounded-xl">
-            <button v-for="lang in ['en', 'th']" :key="lang"
+          <!-- Performance & Compliance Indicators -->
+          <div class="hidden lg:flex items-center gap-6 px-6 py-3 bg-white rounded-2xl border border-slate-200 shadow-sm mr-4">
+            <div class="flex flex-col">
+              <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Global CDN</span>
+              <div class="flex items-center gap-1.5">
+                <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                <span class="text-[10px] font-bold text-slate-700">Active (Edge)</span>
+              </div>
+            </div>
+            <div class="w-px h-6 bg-slate-200"></div>
+            <div class="flex flex-col">
+              <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">Compliance</span>
+              <div class="flex items-center gap-1.5">
+                <ShieldCheck class="w-3 h-3 text-emerald-600" />
+                <span class="text-[10px] font-bold text-slate-700 uppercase">GDPR/CCPA</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex bg-slate-200 p-1 rounded-xl overflow-x-auto max-w-[200px] md:max-w-none no-scrollbar shadow-inner">
+            <button v-for="lang in ['en', 'th', 'zh', 'ja', 'es']" :key="lang"
                     @click="changeLocale(lang)"
-                    class="px-4 py-2 rounded-lg text-sm font-bold transition-all uppercase"
+                    class="px-3 py-2 rounded-lg text-[10px] md:text-sm font-bold transition-all uppercase whitespace-nowrap"
                     :class="[$i18n.locale === lang ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700']">
               {{ lang }}
             </button>
@@ -25,607 +44,216 @@
         </div>
       </div>
 
-      <!-- Tabs Navigation -->
-      <div class="flex gap-8 border-b border-slate-200 mb-12 overflow-x-auto no-scrollbar">
-        <button v-for="tab in ['overview', 'affiliate', 'provider', 'admin', 'pilot', 'farmer']" :key="tab"
-                @click="activeTab = tab"
-                class="pb-4 text-sm font-black uppercase tracking-widest transition-all relative whitespace-nowrap"
-                :class="activeTab === tab ? 'text-emerald-600' : 'text-slate-400 hover:text-slate-600'">
-          {{ tab }}
-          <div v-if="activeTab === tab" class="absolute bottom-0 left-0 w-full h-0.5 bg-emerald-600"></div>
-        </button>
-      </div>
+      <!-- Main Dashboard Content (Unified) -->
+      <div v-if="authStore.role === 'provider'">
+        <!-- Provider Unified View (Minible Style) -->
+        <div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <!-- Quick Stats Row -->
+          <div v-if="dashboardData" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+             <div v-for="stat in platformStats" :key="stat.id"
+                  class="bg-white border border-slate-200 p-6 rounded-[2rem] shadow-sm group hover:border-emerald-500 transition-all">
+               <div class="flex items-center justify-between mb-4">
+                 <div :class="`p-3 rounded-2xl ${stat.iconBg}`">
+                   <component :is="stat.icon" :class="`w-6 h-6 ${stat.iconColor}`" />
+                 </div>
+                 <span :class="`text-[10px] font-black uppercase tracking-widest ${stat.trend > 0 ? 'text-emerald-600' : 'text-amber-600'}`">
+                   {{ stat.trend > 0 ? '+' : '' }}{{ stat.trend }}%
+                 </span>
+               </div>
+               <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{{ stat.label }}</p>
+               <h3 class="text-2xl font-black text-slate-900 tracking-tighter">{{ stat.value }}</h3>
+             </div>
+          </div>
 
-      <div v-if="activeTab === 'overview'">
-        <!-- Enhanced Monitoring Header -->
-        <div class="flex justify-between items-center mb-8">
-          <div class="flex items-center gap-4 bg-slate-100 p-1 rounded-xl">
-            <button @click="fetchDashboardData"
-                    :disabled="isLoading"
-                    class="p-2 rounded-lg text-slate-500 hover:text-emerald-600 transition-all">
-              <RefreshCw class="w-4 h-4" :class="{ 'animate-spin': isLoading }" />
-            </button>
-            <button @click="dashboardView = 'grid'"
-                    :class="dashboardView === 'grid' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'"
-                    class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2">
-              <LayoutDashboard class="w-4 h-4" /> {{ $t('dashboard.ops_grid') }}
-            </button>
-            <button @click="dashboardView = 'focus'"
-                    :class="dashboardView === 'focus' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500'"
-                    class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2">
-              <Plane class="w-4 h-4" /> {{ $t('dashboard.flight_focus') }}
-            </button>
-          </div>
-          <div class="flex items-center gap-4">
-            <button @click="toggleRole"
-                    :class="isAdmin ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-500'"
-                    class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase transition-all flex items-center gap-2">
-              <ShieldCheck class="w-3.3 h-3" /> {{ isAdmin ? $t('dashboard.admin_mode') : $t('dashboard.pilot_mode') }}
-            </button>
-            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">{{ $t('dashboard.global_status') }}</span>
-            <div class="flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase border border-emerald-100">
-              <Signal class="w-3 h-3" /> {{ $t('dashboard.sys_online') }}
-            </div>
-          </div>
-        </div>
-
-        <!-- Quick Stats / Real Data Insights -->
-        <div v-if="dashboardData" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-2xl flex items-center gap-4">
-            <div class="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center text-white">
-              <CloudRain class="w-5 h-5" />
-            </div>
-            <div>
-              <p class="text-[10px] font-bold text-emerald-600 uppercase">{{ $t('dashboard.stats.weather') }}</p>
-              <p class="text-sm font-black text-slate-900">{{ dashboardData.weather?.temp }}°C - {{ dashboardData.weather?.condition }}</p>
-              <p class="text-[9px] text-emerald-500">{{ dashboardData.weather?.source }}</p>
-            </div>
-          </div>
-          <div class="bg-blue-50 border border-blue-100 p-4 rounded-2xl flex items-center gap-4">
-            <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center text-white">
-              <MapIcon class="w-5 h-5" />
-            </div>
-            <div>
-              <p class="text-[10px] font-bold text-blue-600 uppercase">{{ $t('dashboard.stats.assets') }}</p>
-              <p class="text-sm font-black text-slate-900">{{ dashboardData.farmAssets?.length }} {{ $t('dashboard.stats.connected') }}</p>
-              <p class="text-[9px] text-blue-500">Source: Partner API</p>
-            </div>
-          </div>
-          <div class="bg-amber-50 border border-amber-100 p-4 rounded-2xl flex items-center gap-4">
-            <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center text-white">
-              <Zap class="w-5 h-5" />
-            </div>
-            <div>
-              <p class="text-[10px] font-bold text-amber-600 uppercase">{{ $t('dashboard.stats.ai_insight') }}</p>
-              <p class="text-sm font-black text-slate-900">{{ dashboardData.research?.idealMoisture }} {{ $t('dashboard.stats.optimal') }}</p>
-              <p class="text-[9px] text-amber-500">Crop: {{ dashboardData.research?.crop }}</p>
-            </div>
-          </div>
-          <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex items-center gap-4">
-            <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white">
-              <Activity class="w-5 h-5" />
-            </div>
-            <div>
-              <p class="text-[10px] font-bold text-slate-500 uppercase">{{ $t('dashboard.stats.system_health') }}</p>
-              <p class="text-sm font-black text-slate-900">{{ (dashboardData.stats?.healthIndex * 100).toFixed(0) }}% {{ $t('dashboard.stats.optimal') }}</p>
-              <p class="text-[9px] text-slate-400">{{ $t('dashboard.predictive_ai') }}</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Dashboard Views -->
-        <div v-if="dashboardView === 'grid'" class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <!-- Main Grid -->
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <!-- Left Column: Map & Telemetry -->
+            <!-- Left: Fleet Oversight -->
             <div class="lg:col-span-8 space-y-8">
-              <DroneMap :dronePosition="{ lat: 14.21, lng: 101.12 }" :path="flightPath" />
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <TelemetryWidget :telemetry="telemetry" />
-                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
-                  <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">{{ $t('dashboard.stats.analytics') }}</h3>
-                  <div class="space-y-4">
-                    <div v-for="s in quickStats.slice(0, 2)" :key="s.key" class="flex justify-between items-center">
-                      <div class="flex items-center gap-3">
-                        <component :is="s.icon" class="w-4 h-4 text-emerald-600" />
-                        <span class="text-xs font-bold text-slate-700">{{ s.label }}</span>
-                      </div>
-                      <span class="text-sm font-black text-slate-900">{{ s.value }}</span>
-                    </div>
+              <AIActiveSupervisor />
+              <div class="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-8 border-b border-slate-100 flex items-center justify-between">
+                  <div>
+                    <h2 class="text-xl font-black text-slate-900 uppercase tracking-tighter italic">{{ $t('dashboard.oversight') }}</h2>
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">{{ $t('dashboard.ops_status') }}</p>
                   </div>
-                  <button class="w-full mt-6 py-3 bg-slate-50 text-slate-600 text-[10px] font-black uppercase rounded-xl hover:bg-slate-100 transition-all">
-                    {{ $t('dashboard.full_report') }}
-                  </button>
+                  <div class="flex gap-2">
+                    <button @click="dashboardView = dashboardView === 'grid' ? 'focus' : 'grid'"
+                            class="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all flex items-center gap-2">
+                      <LayoutDashboard v-if="dashboardView === 'focus'" class="w-4 h-4" />
+                      <Maximize2 v-else class="w-4 h-4" />
+                      <span class="text-[10px] font-bold uppercase hidden md:inline">{{ dashboardView === 'grid' ? 'Focus Mode' : 'Grid View' }}</span>
+                    </button>
+                    <button @click="fetchDashboardData" class="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all">
+                      <RefreshCw class="w-4 h-4" :class="{ 'animate-spin': isLoading }" />
+                    </button>
+                  </div>
+                </div>
+                <div class="p-0">
+                   <DroneMap :dronePosition="dronePosition" :path="flightPath" />
+                </div>
+              </div>
+
+              <!-- Telemetry Aggregator -->
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div v-for="t in telemetryMetrics" :key="t.label" class="bg-white border border-slate-200 p-6 rounded-3xl shadow-sm">
+                  <div class="flex items-center justify-between mb-4">
+                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">{{ t.label }}</span>
+                    <component :is="t.icon || Zap" class="w-4 h-4 text-emerald-500 opacity-50" />
+                  </div>
+                  <div class="flex items-baseline gap-2">
+                    <span class="text-2xl font-black text-slate-900 tracking-tighter">{{ t.value }}</span>
+                    <span class="text-[10px] font-bold text-slate-500">{{ t.unit }}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Right Column: Mission Control & Media -->
+            <!-- Right: Control & Logs -->
             <div class="lg:col-span-4 space-y-8">
               <MissionControl />
-              <MediaCenter />
-              <MissionHistory v-if="isAdmin" />
-            </div>
-          </div>
-        </div>
-
-        <div v-else class="grid grid-cols-1 lg:grid-cols-4 gap-8 animate-in fade-in zoom-in-95 duration-500">
-          <!-- Focus View: Full Map with Floating Telemetry -->
-          <div class="lg:col-span-3 relative h-[700px]">
-            <DroneMap :dronePosition="{ lat: 14.21, lng: 101.12 }" :path="flightPath" />
-            <div class="absolute top-6 left-6 z-[1001] w-72">
-              <TelemetryWidget :telemetry="telemetry" />
-            </div>
-          </div>
-          <div class="space-y-8">
-            <MissionControl />
-            <div class="bg-emerald-600 rounded-3xl p-6 text-white shadow-lg shadow-emerald-900/20">
-              <h4 class="font-black uppercase tracking-widest text-[10px] mb-4 opacity-80">{{ $t('dashboard.weather_alert') }}</h4>
-              <div class="flex items-center gap-4 mb-2">
-                <CloudRain class="w-8 h-8" />
-                <div>
-                  <div class="text-lg font-bold">{{ $t('dashboard.rain_expected') }}</div>
-                  <div class="text-xs opacity-80">{{ $t('dashboard.approx', { n: 45 }) }}</div>
-                </div>
-              </div>
-              <p class="text-[10px] font-medium opacity-80 leading-relaxed">
-                {{ $t('dashboard.rain_msg') }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div v-else-if="activeTab === 'affiliate'">
-        <AffiliateDashboard />
-      </div>
-      <div v-else-if="activeTab === 'provider'" class="min-h-[calc(100vh-300px)] bg-[#0a0c10] text-slate-300 font-sans -mx-6 -mb-12 rounded-b-3xl overflow-hidden flex flex-col">
-        <!-- Top Status Bar -->
-        <div class="h-14 border-b border-slate-800/50 bg-[#0d1117]/80 backdrop-blur-xl flex items-center justify-between px-8 z-10">
-          <div class="flex items-center gap-6">
-            <div class="flex items-center gap-3">
-              <div class="w-8 h-8 bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-lg flex items-center justify-center">
-                <Activity class="w-5 h-5 text-white" />
-              </div>
-              <span class="text-white font-black tracking-tighter text-lg uppercase italic">GreenDay<span class="text-emerald-500">Ops</span></span>
-            </div>
-            <div class="h-4 w-[1px] bg-slate-800"></div>
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-              <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">{{ globalHealthScore }}% Global Health</span>
-            </div>
-          </div>
-          <div class="flex items-center gap-4">
-            <button class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all">
-              Deploy Hub
-            </button>
-          </div>
-        </div>
-
-        <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
-          <div class="max-w-[1600px] mx-auto space-y-8">
-            <!-- High-Level Intelligence Row -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div v-for="stat in platformStats" :key="stat.id"
-                   class="bg-[#0d1117] border border-slate-800/50 p-6 rounded-3xl hover:border-blue-500/30 transition-all group relative overflow-hidden">
-                <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl"></div>
-                <div class="flex justify-between items-start mb-4">
-                  <div :class="stat.iconBg" class="w-10 h-10 rounded-xl flex items-center justify-center">
-                    <component :is="stat.icon" class="w-5 h-5" :class="stat.iconColor" />
-                  </div>
-                  <span :class="stat.trend > 0 ? 'text-emerald-400' : 'text-slate-500'" class="text-[10px] font-black bg-slate-900 px-2 py-1 rounded-lg border border-slate-800">
-                    {{ stat.trend > 0 ? '+' : '' }}{{ stat.trend }}%
-                  </span>
-                </div>
-                <div>
-                  <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">{{ stat.label }}</p>
-                  <h3 class="text-3xl font-black text-white tracking-tighter">{{ stat.value }}</h3>
-                </div>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              <!-- Center-Left: Multi-Tenant Oversight & Fleet Map -->
-              <div class="lg:col-span-8 space-y-8">
-                <!-- Agent Intelligence & Pulse -->
-                <div class="bg-[#0d1117] border border-slate-800/50 rounded-[2.5rem] p-8 relative overflow-hidden">
-                  <div class="absolute right-0 top-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl"></div>
-                  <div class="flex items-center justify-between mb-8 relative z-10">
-                    <div class="flex items-center gap-4">
-                      <div class="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center border border-emerald-500/20">
-                        <Cpu class="w-6 h-6 text-emerald-400" />
-                      </div>
-                      <div>
-                        <h2 class="text-xl font-black text-white uppercase tracking-tighter italic">GreenDay AI Agent</h2>
-                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Mistral-Powered Core Active</p>
-                      </div>
-                    </div>
-                    <div class="flex items-center gap-6">
-                      <div v-for="pulse in agentPulse" :key="pulse.label" class="text-right">
-                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest leading-none mb-1">{{ pulse.label }}</p>
-                        <p class="text-sm font-black text-white leading-none">{{ pulse.value }}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Live Agent Activity -->
-                  <div class="space-y-4 relative z-10">
-                    <div v-for="log in agentLogs.slice(0, 3)" :key="log.id"
-                         class="flex items-center gap-4 p-4 bg-slate-900/40 border border-slate-800/50 rounded-2xl hover:border-emerald-500/20 transition-all">
-                      <div :class="log.status === 'success' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'"
-                           class="w-8 h-8 rounded-lg flex items-center justify-center">
-                        <component :is="log.icon" class="w-4 h-4" />
-                      </div>
-                      <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between">
-                          <p class="text-[10px] font-black text-white uppercase tracking-tight truncate">{{ log.action }}</p>
-                          <span class="text-[9px] font-bold text-slate-500">{{ log.time }}</span>
-                        </div>
-                        <p class="text-[10px] text-slate-500 truncate mt-0.5">{{ log.details }}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button class="w-full mt-6 py-4 bg-slate-900/50 hover:bg-slate-800/50 border border-slate-800/50 text-slate-400 text-[10px] font-black uppercase tracking-widest rounded-2xl transition-all">
-                    View Agent Analytics
-                  </button>
-                </div>
-
-                <!-- Multi-Tenant Control Panel -->
-                <div class="bg-[#0d1117] border border-slate-800/50 rounded-[2.5rem] overflow-hidden">
-                  <div class="p-8 border-b border-slate-800/50 flex items-center justify-between bg-slate-900/20">
-                    <div>
-                      <h2 class="text-xl font-black text-white uppercase tracking-tighter italic">Tenant Oversight</h2>
-                      <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1">Managing {{ tenants.length }} Regional FarmHubs</p>
-                    </div>
-                    <div class="flex gap-2">
-                      <div class="relative hidden md:block">
-                        <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
-                        <input type="text" placeholder="Search tenants..."
-                               class="bg-slate-950 border border-slate-800 rounded-xl py-2 pl-10 pr-4 text-[10px] font-bold text-slate-300 focus:ring-2 focus:ring-blue-500/20 outline-none w-48 transition-all" />
-                      </div>
-                      <button class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-blue-900/20">
-                        Deploy Hub
-                      </button>
-                    </div>
-                  </div>
-                  <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                      <thead class="bg-slate-900/40 text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                        <tr>
-                          <th class="px-8 py-4">FarmHub / Location</th>
-                          <th class="px-6 py-4">Status</th>
-                          <th class="px-6 py-4 text-center">Active Pilots</th>
-                          <th class="px-6 py-4 text-center">Health</th>
-                          <th class="px-8 py-4 text-right">Throughput</th>
-                        </tr>
-                      </thead>
-                      <tbody class="divide-y divide-slate-800/50">
-                        <tr v-for="tenant in tenants" :key="tenant.id" class="hover:bg-slate-800/20 transition-colors group cursor-pointer">
-                          <td class="px-8 py-6">
-                            <div class="flex items-center gap-4">
-                              <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center font-black text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                                {{ tenant.id.split('-')[1] }}
-                              </div>
-                              <div>
-                                <div class="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">{{ tenant.name }}</div>
-                                <div class="text-[10px] text-slate-500 font-medium">{{ tenant.location }}</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td class="px-6 py-6">
-                            <div class="flex items-center gap-2">
-                              <span :class="tenant.status === 'online' ? 'bg-emerald-500' : 'bg-amber-500'" class="w-1.5 h-1.5 rounded-full"></span>
-                              <span class="text-[10px] font-black uppercase tracking-tighter" :class="tenant.status === 'online' ? 'text-emerald-400' : 'text-amber-400'">
-                                {{ tenant.status }}
-                              </span>
-                            </div>
-                          </td>
-                          <td class="px-6 py-6 text-center">
-                            <span class="text-sm font-black text-white">{{ tenant.pilots }}</span>
-                          </td>
-                          <td class="px-6 py-6">
-                            <div class="w-24 h-1.5 bg-slate-800 rounded-full mx-auto overflow-hidden">
-                              <div :class="tenant.health > 90 ? 'bg-emerald-500' : 'bg-blue-500'"
-                                   class="h-full rounded-full transition-all duration-1000"
-                                   :style="{ width: tenant.health + '%' }"></div>
-                            </div>
-                          </td>
-                          <td class="px-8 py-6 text-right">
-                            <div class="text-sm font-black text-white">฿{{ tenant.throughput.toLocaleString() }}</div>
-                            <div class="text-[8px] text-slate-500 font-bold uppercase">Monthly Rev</div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+              <div class="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm">
+                <div class="flex items-center justify-between mb-6">
+                  <h3 class="text-lg font-black text-slate-900 uppercase tracking-tighter italic">{{ $t('provider.api.pulse') }}</h3>
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                    <span class="text-[10px] font-bold text-slate-500 uppercase">{{ $t('provider.stats.real_time') }}</span>
                   </div>
                 </div>
-
-                <!-- Fleet Telemetry Aggregator -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div v-for="t in telemetryMetrics" :key="t.label" class="bg-[#0d1117] border border-slate-800/50 p-6 rounded-3xl">
-                    <div class="flex items-center justify-between mb-4">
-                      <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">{{ t.label }}</span>
-                      <component :is="t.icon || Zap" class="w-4 h-4 text-blue-500 opacity-50" />
-                    </div>
-                    <div class="flex items-baseline gap-2">
-                      <span class="text-2xl font-black text-white tracking-tighter">{{ t.value }}</span>
-                      <span class="text-[10px] font-bold text-slate-500">{{ t.unit }}</span>
-                    </div>
-                    <div class="mt-4 h-1 bg-slate-800 rounded-full overflow-hidden">
-                      <div class="h-full bg-gradient-to-r from-blue-600 to-indigo-500 rounded-full" :style="{ width: (t.value / (t.label === 'Latency' ? 100 : 1) * 100) + '%' }"></div>
-                    </div>
+                <!-- Interactive SVG Chart -->
+                <div class="h-48 w-full relative group">
+                  <svg class="w-full h-full" viewBox="0 0 100 40" preserveAspectRatio="none">
+                    <!-- Grid Lines -->
+                    <line v-for="i in 4" :key="i" x1="0" :y1="i*10" x2="100" :y2="i*10" stroke="currentColor" class="text-slate-100" stroke-width="0.1" />
+                    <!-- Area -->
+                    <path :d="chartAreaPath" fill="url(#chartGradient)" class="opacity-10" />
+                    <!-- Line -->
+                    <path :d="chartLinePath" fill="none" stroke="currentColor" class="text-emerald-500" stroke-width="0.5" stroke-linejoin="round" />
+                    <!-- Dots -->
+                    <circle v-for="(p, i) in chartPoints" :key="i" :cx="p.x" :cy="p.y" r="0.8" fill="white" stroke="currentColor" class="text-emerald-500" stroke-width="0.2">
+                      <title>{{ apiTrafficData[i].time }}: {{ apiTrafficData[i].reqs }} reqs</title>
+                    </circle>
+                    <defs>
+                      <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="currentColor" class="text-emerald-500" />
+                        <stop offset="100%" stop-color="white" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <!-- Tooltip (Simulated) -->
+                  <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-white/10 backdrop-blur-[1px] rounded-xl pointer-events-none">
+                    <span class="bg-slate-900 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-xl uppercase tracking-widest">
+                      Live Throughput: {{ apiTrafficData[apiTrafficData.length-1].reqs }} reqs/sec
+                    </span>
                   </div>
+                </div>
+                <div class="flex justify-between mt-4">
+                  <span v-for="d in apiTrafficData" :key="d.time" class="text-[8px] font-bold text-slate-400 uppercase">{{ d.time }}</span>
                 </div>
               </div>
 
-              <!-- Right Column: API Health & Real-time Logs -->
-              <div class="lg:col-span-4 space-y-8">
-                <!-- API Health Monitor -->
-                <div class="bg-[#0d1117] border border-slate-800/50 rounded-[2.5rem] p-8">
-                  <div class="flex items-center justify-between mb-8">
-                    <h3 class="text-lg font-black text-white uppercase tracking-tighter flex items-center gap-3 italic">
-                      <Cpu class="w-5 h-5 text-blue-500" />
-                      API Pulse
-                    </h3>
-                  </div>
-                  <div class="space-y-6">
-                    <div v-for="api in apiEndpoints" :key="api.path" class="p-4 bg-slate-900/40 rounded-2xl border border-slate-800/50">
-                      <div class="flex justify-between items-start mb-3">
-                        <div>
-                          <div class="flex items-center gap-2">
-                            <span class="text-[8px] font-black px-1.5 py-0.5 rounded bg-slate-800 text-blue-400">{{ api.method }}</span>
-                            <div class="text-[10px] font-black text-white uppercase tracking-widest">{{ api.path }}</div>
-                          </div>
-                          <div class="text-[8px] text-slate-500 font-bold font-mono mt-1">Status: {{ api.status }}</div>
-                        </div>
-                        <span :class="api.latency < 50 ? 'text-emerald-400' : 'text-amber-400'" class="text-[10px] font-mono font-black">
-                          {{ api.latency }}ms
-                        </span>
-                      </div>
-                      <div class="flex gap-1 h-2">
-                        <div v-for="i in 20" :key="i"
-                             :class="i === 15 ? 'bg-red-500/50' : i > 12 ? 'bg-amber-500/50' : 'bg-emerald-500/50'"
-                             class="flex-1 rounded-sm opacity-80"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Real-time Event Stream -->
-                <div class="bg-[#0d1117] border border-slate-800/50 rounded-[2.5rem] p-8 flex flex-col h-[400px]">
-                  <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-lg font-black text-white uppercase tracking-tighter italic">Fleet Events</h3>
-                    <div class="flex items-center gap-2">
-                      <span class="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping"></span>
-                      <span class="text-[10px] font-black text-blue-500 uppercase tracking-widest">Live</span>
-                    </div>
-                  </div>
-                  <div class="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
-                    <div v-for="event in fleetEvents" :key="event.id" class="flex gap-4 group">
-                      <div class="flex flex-col items-center">
-                        <div class="w-2 h-2 rounded-full mt-1.5"
-                             :class="event.type === 'alert' ? 'bg-red-500' : event.type === 'takeoff' ? 'bg-emerald-500' : 'bg-blue-500'"></div>
-                        <div class="flex-1 w-[1px] bg-slate-800 my-1"></div>
-                      </div>
-                      <div class="pb-4">
-                        <div class="text-[10px] text-slate-500 font-mono mb-1">{{ event.time }}</div>
-                        <div class="text-xs font-bold text-slate-300 group-hover:text-white transition-colors">
-                          <span class="uppercase font-black text-white mr-2">[{{ event.type }}]</span>
-                          {{ event.drone }} at {{ event.location }}
-                          <p v-if="event.message" class="text-[10px] text-red-400 mt-1 font-bold">{{ event.message }}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div class="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm">
+                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tighter mb-6 italic">{{ $t('dashboard.affiliate.marketing_hub') }}</h3>
+                <AffiliateDashboard is-compact />
               </div>
+              <MissionHistory />
             </div>
           </div>
         </div>
       </div>
-      <div v-else-if="activeTab === 'admin'" class="min-h-[calc(100vh-300px)] bg-slate-100 font-sans flex flex-col -mx-6 -mb-12 rounded-b-3xl overflow-hidden">
-        <!-- Top Stats Row -->
-        <div class="grid grid-cols-2 md:grid-cols-6 gap-4 p-4 bg-white border-b border-slate-200">
-          <div v-for="stat in summaryStats" :key="stat.key" class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-            <p class="text-[10px] text-slate-500 uppercase font-black tracking-tighter">{{ $t(`admin.stats.${stat.key}`) }}</p>
-            <div class="flex items-end justify-between mt-1">
-              <p class="text-2xl font-black text-slate-900 leading-none">{{ stat.value }}</p>
-              <span v-if="stat.trend" :class="`text-[10px] font-bold ${stat.trend.startsWith('+') ? 'text-emerald-500' : 'text-red-500'}`">
-                {{ stat.trend }}
-              </span>
-            </div>
-          </div>
-        </div>
 
-        <!-- Main Content -->
-        <div class="flex-1 flex overflow-hidden min-h-[600px]">
-          <!-- Left Sidebar (Admin Menu) -->
-          <div class="w-20 md:w-64 bg-slate-900 flex flex-col text-slate-400">
-            <div class="p-6 text-white font-black text-xl hidden md:block">{{ $t('admin.panel') }}</div>
-            <nav class="flex-1 p-2 space-y-1">
-              <button v-for="item in adminMenu" :key="item.key"
-                      class="w-full flex items-center gap-4 p-3 rounded-xl hover:bg-white/10 hover:text-white transition-all group">
-                <component :is="item.icon" class="w-6 h-6 group-hover:text-orange-500" />
-                <span class="text-sm font-bold hidden md:block">{{ $t(`admin.menu.${item.key}`) }}</span>
+      <div v-else-if="authStore.role === 'client'">
+        <!-- Client Unified View -->
+        <div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <!-- Booking Banner -->
+          <div class="p-8 bg-gradient-to-r from-emerald-600 to-emerald-800 rounded-[2.5rem] text-white shadow-xl relative overflow-hidden group cursor-pointer" @click="handleCallDrone">
+            <div class="relative z-10">
+              <span class="inline-block px-3 py-1 bg-white/20 text-white text-[10px] font-black uppercase rounded-full mb-4">{{ $t('dashboard.ready_takeoff') }}</span>
+              <h2 class="text-3xl font-black mb-2 uppercase tracking-tight italic">{{ $t('kaset.farmer.banner_title') }}</h2>
+              <p class="text-emerald-100/80 text-sm mb-6 max-w-md">{{ $t('kaset.farmer.banner_subtitle') }}</p>
+              <button class="bg-white text-emerald-700 px-8 py-3 rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-emerald-50 transition-all shadow-lg">
+                {{ $t('kaset.farmer.banner_cta') }}
               </button>
-            </nav>
+            </div>
+            <Plane class="absolute right-[-20px] top-1/2 -translate-y-1/2 w-64 h-64 text-white/10 rotate-12 group-hover:scale-110 transition-transform duration-700" />
           </div>
 
-          <!-- Center: Map -->
-          <div class="flex-1 relative bg-slate-200">
-            <DroneMap
-              :center="{ lat: 13.7367, lng: 100.5231 }"
-              :zoom="6"
-              :markers="adminMarkers"
-              :showOverlays="false"
-            />
-
-            <!-- Floating Map Controls -->
-            <div class="absolute top-4 right-4 z-[1000] flex flex-col gap-2">
-              <div class="bg-white p-2 rounded-xl shadow-lg border border-slate-200">
-                <div class="flex items-center gap-2 mb-2">
-                  <div class="w-3 h-3 bg-red-600 rounded-full"></div>
-                  <span class="text-[10px] font-bold uppercase">{{ $t('admin.stats.pilots_online') }}</span>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Left: Map & Status -->
+            <div class="lg:col-span-8 space-y-8">
+              <div class="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-8 border-b border-slate-100">
+                  <h3 class="text-lg font-black text-slate-900 uppercase tracking-tighter italic">{{ $t('dashboard.mission_progress') }}</h3>
                 </div>
-                <div class="flex items-center gap-2">
-                  <div class="w-3 h-3 bg-emerald-600 rounded-full"></div>
-                  <span class="text-[10px] font-bold uppercase">{{ $t('admin.farmers') }}</span>
+                <DroneMap :dronePosition="dronePosition" :path="flightPath" />
+                <div class="p-8 bg-slate-50 border-t border-slate-100">
+                  <TelemetryWidget :telemetry="telemetry" />
+                </div>
+              </div>
+
+              <!-- Service Grid -->
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button v-for="item in farmerMenuItems.slice(0, 4)" :key="item.key"
+                        @click="handleFarmerMenuClick(item)"
+                        class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex flex-col items-center gap-4 hover:border-emerald-500 transition-all active:scale-95">
+                  <div :class="`w-12 h-12 ${item.bgColor} rounded-xl flex items-center justify-center`">
+                    <component :is="item.icon" :class="`w-6 h-6 ${item.iconColor}`" />
+                  </div>
+                  <span class="text-xs font-bold text-slate-700 uppercase tracking-tighter text-center">{{ $t(`kaset.farmer.menu.${item.key}`) }}</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Right: Affiliate & History -->
+            <div class="lg:col-span-4 space-y-8">
+              <div class="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm">
+                <h3 class="text-lg font-black text-slate-900 uppercase tracking-tighter mb-6 italic">{{ $t('dashboard.earn') }}</h3>
+                <AffiliateDashboard is-compact />
+              </div>
+              <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-xl">
+                <h3 class="text-lg font-black uppercase tracking-tighter mb-6 italic">{{ $t('dashboard.history') }}</h3>
+                <div class="space-y-4">
+                  <div v-for="job in jobs" :key="job.id" class="p-4 bg-white/5 rounded-2xl border border-white/10">
+                    <div class="flex justify-between items-start mb-2">
+                      <span :class="`text-[8px] font-black uppercase px-2 py-0.5 rounded-full ${job.statusBg}`">{{ job.status }}</span>
+                      <span class="text-[10px] text-slate-400">{{ job.time }}</span>
+                    </div>
+                    <p class="text-sm font-bold text-white">{{ job.area }}</p>
+                    <p class="text-[10px] text-slate-500 font-mono">{{ job.price }}</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- Right Panel: Job Timeline -->
-          <div class="w-80 bg-white border-l border-slate-200 flex flex-col hidden lg:flex">
-            <div class="p-6 border-b border-slate-100">
-              <h3 class="font-black text-slate-900 uppercase tracking-tight">{{ $t('admin.timeline') }}</h3>
-            </div>
-            <div class="flex-1 overflow-y-auto p-4 space-y-4">
-              <div v-for="job in jobs" :key="job.id" class="p-4 bg-slate-50 rounded-2xl border border-slate-100 relative overflow-hidden">
-                <div :class="`absolute top-0 left-0 w-1 h-full ${job.statusColor}`"></div>
-                <div class="flex justify-between items-start mb-2">
-                  <span :class="`text-[8px] font-black uppercase px-2 py-0.5 rounded-full text-white ${job.statusBg}`">
-                    {{ job.status }}
-                  </span>
-                  <span class="text-[10px] text-slate-400">{{ job.time }}</span>
-                </div>
-                <p class="text-sm font-bold text-slate-900">{{ job.customer }}</p>
-                <p class="text-[10px] text-slate-500 font-mono">{{ job.area }} • {{ job.price }}</p>
-                <div class="mt-3 flex items-center gap-2">
-                  <div class="w-6 h-6 bg-slate-200 rounded-full"></div>
-                  <span class="text-[10px] font-medium text-slate-600">{{ $t('admin.pilot') }}: {{ job.pilot }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div v-else-if="activeTab === 'pilot'" class="min-h-[calc(100vh-300px)] bg-slate-900 font-sans -mx-6 -mb-12 rounded-b-3xl overflow-hidden pb-20 text-white">
-        <!-- Pilot Header -->
-        <header class="p-6 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/90 backdrop-blur-md z-10">
-          <div class="flex items-center gap-3">
-            <h1 class="text-xl font-bold">{{ $t('kaset.pilot.header') }}</h1>
-          </div>
-          <button
-            @click="isPilotReady = !isPilotReady"
-            class="flex items-center gap-2 px-4 py-2 rounded-full border transition-all"
-            :class="isPilotReady ? 'bg-emerald-500/10 border-emerald-500 text-emerald-400' : 'bg-red-500/10 border-red-500 text-red-400'"
-          >
-            <div class="w-2 h-2 rounded-full" :class="isPilotReady ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'"></div>
-            <span class="text-xs font-black uppercase">{{ isPilotReady ? $t('kaset.pilot.ready') : $t('kaset.pilot.not_ready') }}</span>
-          </button>
-        </header>
-
-        <!-- Pilot Profile Summary -->
-        <div class="m-4 p-6 bg-gradient-to-br from-red-900/40 to-slate-800 rounded-3xl border border-red-900/30">
-          <div class="flex items-center gap-4 mb-6">
-            <div class="w-16 h-16 bg-red-600 rounded-2xl flex items-center justify-center shadow-lg shadow-red-900/40">
-              <User class="w-10 h-10 text-white" />
-            </div>
-            <div>
-              <h2 class="text-lg font-bold">Pilot Alpha-01</h2>
-              <p class="text-slate-400 text-xs font-mono">ID: SF-99234-TH</p>
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="bg-slate-900/50 p-3 rounded-xl border border-white/5">
-              <p class="text-[10px] text-slate-500 uppercase font-bold">{{ $t('kaset.pilot.total_jobs') }}</p>
-              <p class="text-xl font-black text-white">128</p>
-            </div>
-            <div class="bg-slate-900/50 p-3 rounded-xl border border-white/5">
-              <p class="text-[10px] text-slate-500 uppercase font-bold">{{ $t('kaset.pilot.rating') }}</p>
-              <p class="text-xl font-black text-amber-400">4.9 ★</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Pilot Menu Items -->
-        <div class="px-4 space-y-3">
-          <button
-            v-for="item in pilotMenuItems"
-            :key="item.key"
-            @click="handlePilotMenuClick(item)"
-            class="w-full bg-slate-800 p-5 rounded-2xl border border-slate-700/50 flex items-center gap-4 transition-transform active:scale-[0.98] group"
-          >
-            <div :class="`w-12 h-12 ${item.bgColor} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform`">
-              <component :is="item.icon" :class="`w-6 h-6 ${item.iconColor}`" />
-            </div>
-            <div class="flex-1 text-left">
-              <span class="text-sm font-bold text-slate-200">{{ $t(`kaset.pilot.menu.${item.key}`) }}</span>
-              <p class="text-[10px] text-slate-500 mt-0.5">{{ $t(`kaset.pilot.menu_desc.${item.key}`) }}</p>
-            </div>
-            <ChevronRight class="w-5 h-5 text-slate-600" />
-          </button>
-        </div>
-      </div>
-      <div v-else-if="activeTab === 'farmer'" class="min-h-[calc(100vh-300px)] bg-slate-50 font-sans -mx-6 -mb-12 rounded-b-3xl overflow-hidden pb-20">
-        <!-- Farmer Header -->
-        <header class="bg-gradient-to-r from-orange-500 to-red-600 p-6 text-white shadow-lg sticky top-0 z-10 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <h1 class="text-xl font-bold uppercase tracking-tighter">{{ $t('kaset.farmer.header') }}</h1>
-          </div>
-          <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-            <Plane class="w-6 h-6 brightness-0 invert" />
-          </div>
-        </header>
-
-        <!-- Hero Banner -->
-        <div class="m-4 p-6 bg-white rounded-3xl shadow-sm border border-orange-100 flex items-center justify-between overflow-hidden relative group cursor-pointer" @click="handleCallDrone">
-          <div class="z-10">
-            <span class="inline-block px-3 py-1 bg-orange-100 text-orange-600 text-[10px] font-black uppercase rounded-full mb-2">Instant Booking</span>
-            <h2 class="text-2xl font-black text-orange-600 leading-tight">
-              {{ $t('kaset.farmer.banner_title') }}
-            </h2>
-            <p class="text-slate-500 text-sm mt-1 font-medium">{{ $t('kaset.farmer.banner_subtitle') }}</p>
-            <button class="mt-4 bg-orange-600 text-white px-6 py-2 rounded-full text-sm font-black shadow-lg shadow-orange-200 group-hover:bg-orange-500 transition-all">
-              {{ $t('kaset.farmer.banner_cta') }}
-            </button>
-          </div>
-          <div class="absolute right-[-20px] top-0 opacity-10 group-hover:opacity-20 transition-opacity">
-            <Plane class="w-40 h-40 text-orange-600 rotate-12" />
-          </div>
-        </div>
-
-        <!-- Farmer Main Grid -->
-        <div class="px-4 grid grid-cols-2 gap-4">
-          <button
-            v-for="item in farmerMenuItems"
-            :key="item.key"
-            @click="handleFarmerMenuClick(item)"
-            class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex flex-col items-center gap-3 transition-transform active:scale-95"
-          >
-            <div :class="`w-14 h-14 ${item.bgColor} rounded-2xl flex items-center justify-center`">
-              <component :is="item.icon" :class="`w-8 h-8 ${item.iconColor}`" />
-            </div>
-            <span class="text-sm font-bold text-slate-700 text-center leading-tight">
-              {{ $t(`kaset.farmer.menu.${item.key}`) }}
-            </span>
-          </button>
         </div>
       </div>
     </div>
+    <PrivacyBanner />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { isRTL } from '../i18n';
 import {
   LogOut, Plane, Activity, CloudRain, ShieldCheck, LayoutDashboard, Users, Zap, Signal, Map as MapIcon,
   Video, RefreshCw, Globe, Server, Database, ArrowUpRight, AlertCircle, CheckCircle, Fan, Radio,
   FileText, Search, Filter, CheckCircle2, AlertTriangle, XCircle,
-  UserCheck, Clock, BarChart3, Settings, Package, Bell, Cpu,
+  UserCheck, Clock, BarChart3, Settings, Package, Bell, Cpu, Maximize2,
   ChevronLeft, Gamepad2, Wallet, MapPin, History, Calculator, DollarSign, Calendar, PhoneCall, User, ChevronRight
 } from 'lucide-vue-next';
 import { useAuthStore } from '../stores';
 import AffiliateDashboard from '../components/AffiliateDashboard.vue';
+import PrivacyBanner from '../components/PrivacyBanner.vue';
 import DroneMap from '../components/dashboard/DroneMap.vue';
 import TelemetryWidget from '../components/dashboard/TelemetryWidget.vue';
 import MissionControl from '../components/dashboard/MissionControl.vue';
 import MediaCenter from '../components/dashboard/MediaCenter.vue';
 import MissionHistory from '../components/dashboard/MissionHistory.vue';
+import AIActiveSupervisor from '../components/dashboard/AIActiveSupervisor.vue';
 import { DroneApiService } from '../services/droneApi';
+import { telemetry as telemetryService } from '../services/telemetry';
 
 const route = useRoute();
 const activeTab = ref(route.query.tab || 'overview');
@@ -636,6 +264,15 @@ const dashboardData = ref(null);
 const { locale, t } = useI18n();
 const router = useRouter();
 const authStore = useAuthStore();
+
+// --- Platform Monitoring ---
+const trackPlatformUsage = (action, props = {}) => {
+  telemetryService.trackEvent(`dashboard_${action}`, {
+    role: authStore.role,
+    locale: locale.value,
+    ...props
+  });
+};
 
 // --- Provider Dashboard Logic ---
 const searchTerm = ref('');
@@ -686,12 +323,12 @@ const adminMarkers = [
     { id: 3, action: 'Anomaly Detected', details: 'Minor telemetry drift on Beta-09. Automatic recalibration initiated.', time: '12m ago', status: 'warning', icon: AlertCircle }
   ];
 
-  const platformStats = [
-    { id: 1, label: 'Global Fleet', value: '124', trend: 12, icon: Plane, iconBg: 'bg-blue-500/20', iconColor: 'text-blue-400' },
-    { id: 2, label: 'Active Sessions', value: '42', trend: 8, icon: Activity, iconBg: 'bg-emerald-500/20', iconColor: 'text-emerald-400' },
-    { id: 3, label: 'API Uptime', value: '99.9%', trend: 0.1, icon: Globe, iconBg: 'bg-indigo-500/20', iconColor: 'text-indigo-400' },
-    { id: 4, label: 'System Load', value: '14.2%', trend: -2, icon: Cpu, iconBg: 'bg-amber-500/20', iconColor: 'text-amber-400' }
-  ];
+  const platformStats = computed(() => [
+    { id: 1, label: t('provider.stats.global_fleet'), value: '124', trend: 12, icon: Plane, iconBg: 'bg-blue-500/20', iconColor: 'text-blue-400' },
+    { id: 2, label: t('provider.stats.active_sessions'), value: '42', trend: 8, icon: Activity, iconBg: 'bg-emerald-500/20', iconColor: 'text-emerald-400' },
+    { id: 3, label: t('provider.stats.api_uptime'), value: '99.9%', trend: 0.1, icon: Globe, iconBg: 'bg-indigo-500/20', iconColor: 'text-indigo-400' },
+    { id: 4, label: t('provider.stats.system_load'), value: '14.2%', trend: -2, icon: Cpu, iconBg: 'bg-amber-500/20', iconColor: 'text-amber-400' }
+  ]);
 
   const tenants = [
     { id: 'HUB-001', name: 'Ratchaburi Central', location: 'Western Thailand', status: 'online', pilots: 12, health: 98, throughput: 145000 },
@@ -748,6 +385,28 @@ const apiTrafficData = ref([
   { time: '10:50', reqs: 2400 },
 ]);
 
+// --- Chart Computeds ---
+const chartPoints = computed(() => {
+  const maxReqs = Math.max(...apiTrafficData.value.map(d => d.reqs));
+  return apiTrafficData.value.map((d, i) => ({
+    x: (i / (apiTrafficData.value.length - 1)) * 100,
+    y: 40 - (d.reqs / maxReqs) * 30 - 5 // Scaled to fit 40 height with margin
+  }));
+});
+
+const chartLinePath = computed(() => {
+  return chartPoints.value.reduce((path, p, i) => {
+    return path + (i === 0 ? `M ${p.x} ${p.y}` : ` L ${p.x} ${p.y}`);
+  }, '');
+});
+
+const chartAreaPath = computed(() => {
+  if (chartPoints.value.length === 0) return '';
+  const first = chartPoints.value[0];
+  const last = chartPoints.value[chartPoints.value.length - 1];
+  return `${chartLinePath.value} L ${last.x} 40 L ${first.x} 40 Z`;
+});
+
 const filteredLogs = computed(() => {
   return systemLogs.value.filter(log => {
     const matchesSearch =
@@ -803,6 +462,8 @@ const fetchDashboardData = async () => {
 };
 
 onMounted(() => {
+  telemetry.trackPageView('Dashboard');
+  trackPlatformUsage('view');
   fetchDashboardData();
 
   // Connect Socket.io for Real-time Drone Updates
@@ -851,9 +512,12 @@ onUnmounted(() => {
 
 const changeLocale = (lang) => {
   locale.value = lang;
+  localStorage.setItem('user_locale', lang);
+  trackPlatformUsage('change_locale', { new_lang: lang });
 };
 
 const handleLogout = () => {
+  trackPlatformUsage('logout');
   authStore.logout();
   router.push('/auth');
 };
