@@ -13,6 +13,7 @@ const http = require('http');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const { Server } = require('socket.io');
+const { Pool } = require('pg');
 const gateway = require('./services/api-gateway.cjs');
 const optimizer = require('./optimizer.cjs');
 const affiliateService = require('./services/affiliate-service.cjs');
@@ -59,7 +60,9 @@ const port = process.env.PORT || 3001;
 // Detect Atlas SQL and treat as sqlite fallback for now since it's read-only/BI
 const isAtlasSql = process.env.MONGODB_URI && process.env.MONGODB_URI.includes('atlas-sql');
 const hasAzureSql = process.env.SQL_SERVER && process.env.SQL_USER && process.env.SQL_PASSWORD;
-const dbType = (process.env.MONGODB_URI && !isAtlasSql) ? 'mongodb' : (hasAzureSql ? 'mssql' : 'sqlite');
+const hasPg = process.env.DATABASE_URL;
+const hasMongo = process.env.MONGODB_URI && !isAtlasSql;
+const dbType = hasMongo ? 'mongodb' : (hasPg ? 'postgres' : (hasAzureSql ? 'mssql' : 'sqlite'));
 global.dbType = dbType; // Make it global for services
 
 // MongoDB Schemas
@@ -152,9 +155,64 @@ const sqlConfig = {
 
 let db;
 let sqlPool;
+let pgPool;
 
 async function initDb(retries = 5) {
-  if (dbType === 'mongodb') {
+  if (dbType === 'postgres') {
+    pgPool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false
+      }
+    });
+
+    // Test connection and initialize schema
+    try {
+      await pgPool.query(`
+        CREATE TABLE IF NOT EXISTS users (
+          id SERIAL PRIMARY KEY,
+          email TEXT UNIQUE NOT NULL,
+          phone TEXT,
+          password TEXT NOT NULL,
+          role TEXT DEFAULT 'user',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS daily_tasks (
+          id SERIAL PRIMARY KEY,
+          user_id INTEGER REFERENCES users(id),
+          title TEXT NOT NULL,
+          description TEXT,
+          status TEXT DEFAULT 'pending',
+          priority TEXT DEFAULT 'medium',
+          due_date DATE DEFAULT CURRENT_DATE,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS agent_logs (
+          id SERIAL PRIMARY KEY,
+          user_id TEXT,
+          action TEXT NOT NULL,
+          status TEXT NOT NULL,
+          metadata JSONB,
+          timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE TABLE IF NOT EXISTS agent_tokens (
+          id SERIAL PRIMARY KEY,
+          user_id TEXT UNIQUE,
+          token TEXT NOT NULL,
+          expires_at TIMESTAMP,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      console.log('PostgreSQL Initialized Successfully');
+      return;
+    } catch (err) {
+      console.error('PostgreSQL Initialization Failed:', err);
+      throw err;
+    }
+  } else if (dbType === 'mongodb') {
     while (retries > 0) {
       try {
         await mongoose.connect(process.env.MONGODB_URI);
@@ -289,7 +347,10 @@ const initializeLogger = () => {
 // Helper for unified DB access (SQL shim for Mongo if needed, or use models)
 const query = {
   get: async (sql, params = []) => {
-    if (dbType === 'mongodb') {
+    if (dbType === 'postgres') {
+      const result = await pgPool.query(sql.replace(/\?/g, (match, i) => `$${params.indexOf(params[i]) + 1}`), params);
+      return result.rows[0];
+    } else if (dbType === 'mongodb') {
       let result = null;
       if (sql.includes('users WHERE email = ?')) result = await User.findOne({ email: params[0] }).lean();
       else if (sql.includes('users WHERE id = ?')) result = await User.findById(params[0]).lean();
@@ -307,7 +368,10 @@ const query = {
     }
   },
   all: async (sql, params = []) => {
-    if (dbType === 'mongodb') {
+    if (dbType === 'postgres') {
+      const result = await pgPool.query(sql.replace(/\?/g, (match, i) => `$${params.indexOf(params[i]) + 1}`), params);
+      return result.rows;
+    } else if (dbType === 'mongodb') {
       let results = [];
       if (sql.includes('daily_tasks WHERE user_id = ?')) {
         results = await Task.find({ user_id: params[0] }).sort({ created_at: -1 }).lean();
@@ -325,7 +389,10 @@ const query = {
     }
   },
   run: async (sql, params = []) => {
-    if (dbType === 'mongodb') {
+    if (dbType === 'postgres') {
+      const result = await pgPool.query(sql.replace(/\?/g, (match, i) => `$${params.indexOf(params[i]) + 1}`), params);
+      return { lastInsertRowid: result.rows[0]?.id, changes: result.rowCount };
+    } else if (dbType === 'mongodb') {
       if (sql.includes('INSERT INTO users')) {
         const user = new User({ email: params[0], password: params[1], phone: params[2] });
         await user.save();
@@ -351,6 +418,16 @@ const query = {
       if (sql.includes('DELETE FROM daily_tasks')) {
         await Task.findOneAndDelete({ _id: params[0], user_id: params[1] });
         return { changes: 1 };
+      }
+      if (sql.includes('INSERT INTO agent_logs')) {
+        const log = new AgentLog({ user_id: params[0], action: params[1], status: params[2], metadata: JSON.parse(params[3] || '{}') });
+        await log.save();
+        return { lastInsertRowid: log._id.toString() };
+      }
+      if (sql.includes('INSERT INTO agent_tokens')) {
+        const token = new AgentToken({ user_id: params[0], token: params[1], expires_at: params[2] });
+        await token.save();
+        return { lastInsertRowid: token._id.toString() };
       }
       return { changes: 0 };
     } else if (dbType === 'mssql') {
