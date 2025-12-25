@@ -62,7 +62,7 @@ const isAtlasSql = process.env.MONGODB_URI && process.env.MONGODB_URI.includes('
 const hasAzureSql = process.env.SQL_SERVER && process.env.SQL_USER && process.env.SQL_PASSWORD;
 const hasPg = process.env.DATABASE_URL;
 const hasMongo = process.env.MONGODB_URI && !isAtlasSql;
-const dbType = hasMongo ? 'mongodb' : (hasPg ? 'postgres' : (hasAzureSql ? 'mssql' : 'sqlite'));
+const dbType = process.env.DB_TYPE || (hasPg ? 'postgres' : (hasMongo ? 'mongodb' : (hasAzureSql ? 'mssql' : 'sqlite')));
 global.dbType = dbType; // Make it global for services
 
 // MongoDB Schemas
@@ -361,7 +361,9 @@ const initializeLogger = () => {
 const query = {
   get: async (sql, params = []) => {
     if (dbType === 'postgres') {
-      const result = await pgPool.query(sql.replace(/\?/g, (match, i) => `$${params.indexOf(params[i]) + 1}`), params);
+      let index = 1;
+      const pgSql = sql.replace(/\?/g, () => `$${index++}`);
+      const result = await pgPool.query(pgSql, params);
       return result.rows[0];
     } else if (dbType === 'mongodb') {
       let result = null;
@@ -382,7 +384,9 @@ const query = {
   },
   all: async (sql, params = []) => {
     if (dbType === 'postgres') {
-      const result = await pgPool.query(sql.replace(/\?/g, (match, i) => `$${params.indexOf(params[i]) + 1}`), params);
+      let index = 1;
+      const pgSql = sql.replace(/\?/g, () => `$${index++}`);
+      const result = await pgPool.query(pgSql, params);
       return result.rows;
     } else if (dbType === 'mongodb') {
       let results = [];
@@ -403,7 +407,9 @@ const query = {
   },
   run: async (sql, params = []) => {
     if (dbType === 'postgres') {
-      const result = await pgPool.query(sql.replace(/\?/g, (match, i) => `$${params.indexOf(params[i]) + 1}`), params);
+      let index = 1;
+      const pgSql = sql.replace(/\?/g, () => `$${index++}`);
+      const result = await pgPool.query(pgSql, params);
       return { lastInsertRowid: result.rows[0]?.id, changes: result.rowCount };
     } else if (dbType === 'mongodb') {
       if (sql.includes('INSERT INTO users')) {
@@ -520,7 +526,14 @@ app.use((req, res, next) => {
 
 // Session Store configuration based on database type
 let sessionStore;
-if (dbType === 'mongodb') {
+if (dbType === 'postgres') {
+  const pgSession = require('connect-pg-simple')(session);
+  sessionStore = new pgSession({
+    pool: pgPool,
+    tableName: 'sessions',
+    createTableIfMissing: true
+  });
+} else if (dbType === 'mongodb') {
   const mongoOptions = {
     mongoUrl: process.env.MONGODB_URI,
     ttl: 24 * 60 * 60,
