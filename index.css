@@ -20,3 +20,43 @@ body {
 }
 
 /* Custom styles for Leaflet and other components can go here if not in index.html */
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Light Glass Popup */
+.glass-popup .leaflet-popup-content-wrapper {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  padding: 0;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+  border-radius: 0.75rem;
+}
+
+.glass-popup .leaflet-popup-tip {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.glass-popup .leaflet-popup-content {
+  margin: 0;
+  line-height: 1.5;
+}
